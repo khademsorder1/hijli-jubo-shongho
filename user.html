@@ -6,41 +6,137 @@
     <title>হিজলী দিঘাপাড়া যুব সংঘ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
+        /* CSS কোড লোড হওয়ার আগে বডি হাইড রাখা হয়, যা ফ্ল্যাশিং রোধ করে */
         body { display: none; } 
-        :root { --primary-color: #16a085; --secondary-color: #e74c3c; --light-gray: #f0f2f5; --dark-text: #2c3e50; --light-text: #666; --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+        
+        :root { 
+            --primary-color: #16a085; 
+            --secondary-color: #e74c3c; 
+            --light-gray: #f0f2f5; 
+            --dark-text: #2c3e50; 
+            --light-text: #666; 
+            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+        }
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background-color: var(--light-gray); color: var(--dark-text); padding-bottom: 80px; }
-        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; }
+        
+        body { 
+            font-family: 'Hind Siliguri', sans-serif; 
+            margin: 0; 
+            background-color: var(--light-gray); 
+            color: var(--dark-text); 
+            padding-bottom: 80px; 
+        }
+        
+        header { 
+            background-color: var(--primary-color); 
+            color: white; 
+            padding: 20px; 
+            text-align: center; 
+        }
         header h1 { font-size: 1.6rem; margin: 0; }
         header p { font-size: 0.9rem; margin: 5px 0 0; }
-        header .established { display: inline-block; background-color: white; color: var(--primary-color); padding: 5px 15px; border-radius: 15px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        header .established { 
+            display: inline-block; 
+            background-color: white; 
+            color: var(--primary-color); 
+            padding: 5px 15px; 
+            border-radius: 15px; 
+            font-weight: bold; 
+            margin-top: 10px; 
+            font-size: 0.9rem; 
+        }
+        
         .page { display: none; padding: 15px; animation: fadeIn 0.5s; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .card { background-color: white; padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 20px; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .card { 
+            background-color: white; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: var(--card-shadow); 
+            margin-bottom: 20px; 
+        }
+        
         h2 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; }
-        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; }
-        #home-section .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
-        .feature-card-v2 { background-color: white; border-radius: 15px; box-shadow: var(--card-shadow); overflow: hidden; display: flex; flex-direction: column; text-align: center; cursor: pointer; }
+        
+        .search-bar { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box; 
+        }
+        
+        #home-section .features-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 15px; 
+        }
+        .feature-card-v2 { 
+            background-color: white; 
+            border-radius: 15px; 
+            box-shadow: var(--card-shadow); 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            text-align: center; 
+            cursor: pointer; 
+        }
         .feature-card-v2-top { padding: 15px; color: white; }
         .feature-card-v2-top i { font-size: 2rem; margin-bottom: 5px; }
         .feature-card-v2-top h3 { margin: 0; font-size: 1rem; }
-        .feature-card-v2-bottom { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .feature-card-v2-bottom { 
+            padding: 15px; 
+            flex-grow: 1; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+        }
         .feature-card-v2-bottom p { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--light-text); }
-        .feature-card-v2-bottom button { border: none; padding: 8px 20px; border-radius: 20px; color: white; font-size: 0.9rem; cursor: pointer; align-self: center; }
+        .feature-card-v2-bottom button { 
+            border: none; 
+            padding: 8px 20px; 
+            border-radius: 20px; 
+            color: white; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            align-self: center; 
+        }
+        
         .card-chada .feature-card-v2-top, .card-chada button { background-color: #00897b; }
         .card-fee .feature-card-v2-top, .card-fee button { background-color: #689f38; }
         .card-blood .feature-card-v2-top, .card-blood button { background-color: #d32f2f; }
         .card-member .feature-card-v2-top, .card-member button { background-color: #6a1b9a; }
+        
         .member-list .member-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .member-item img { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        
         #bloodList { display: grid; gap: 15px; }
         .donor-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .donor-header { display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
-        .donor-header .blood-group { background-color: var(--secondary-color); color: white; font-weight: bold; font-size: 1.2rem; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
+        .donor-header .blood-group { 
+            background-color: var(--secondary-color); 
+            color: white; 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            border-radius: 50%; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 15px; 
+            flex-shrink: 0; 
+        }
         .donor-header h4 { margin: 0; font-size: 1.1rem; }
         .donor-details p { margin: 8px 0; font-size: 0.9rem; color: var(--light-text); display: flex; align-items: center; }
         .donor-details p i { color: var(--primary-color); width: 20px; text-align: center; margin-right: 8px; }
+        
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
         .modal-content { background-color: #fefefe; margin: 20% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; position: relative; }
         .close-btn { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
@@ -49,35 +145,80 @@
         .info-table { text-align: left; margin: 0 auto; }
         .info-table td { padding: 5px; }
         .info-table td:first-child { font-weight: bold; }
+        
         .data-list .data-item { padding: 10px; border-bottom: 1px solid #eee; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-around; padding: 8px 0; }
+        
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #95a5a6; font-size: 0.8rem; padding: 5px; cursor: pointer; flex-grow: 1; }
         .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
         .nav-item.active { color: var(--primary-color); }
+        
         #profile-section .form-group { margin-bottom: 15px; text-align: left; }
         #profile-section label { display: block; margin-bottom: 5px; font-weight: 500; }
         #profile-section input, #profile-section select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
         #profile-section button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
-        .typewriter-text { overflow: hidden; border-right: .15em solid orange; white-space: nowrap; margin: 0 auto; letter-spacing: .1em; animation: typing 3.5s steps(30, end) infinite, blink-caret .75s step-end infinite; }
-        @keyframes typing { from { width: 0 } to { width: 100% } 50% {width: 100%} 100% {width: 0} }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: orange; } }
+        
+        .typewriter-text { 
+            overflow: hidden; 
+            border-right: .15em solid orange; 
+            white-space: nowrap; 
+            margin: 0 auto; 
+            letter-spacing: .1em; 
+            animation: typing 3.5s steps(30, end) infinite, blink-caret .75s step-end infinite; 
+            max-width: fit-content;
+        }
+        @keyframes typing { 
+            from { width: 0 } 
+            to { width: 100% } 
+            50% { width: 100% } 
+            100% { width: 0 } 
+        }
+        @keyframes blink-caret { 
+            from, to { border-color: transparent } 
+            50% { border-color: orange; } 
+        }
+        
         .donation-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
         .donation-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
-        .donation-info h4 { margin: 0; } .donation-info p { margin: 5px 0 0; color: #666; }
+        .donation-info h4 { margin: 0; } 
+        .donation-info p { margin: 5px 0 0; color: #666; }
+        
         .finance-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .finance-table th, .finance-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
         .finance-table th { background-color: #f2f2f2; }
         .finance-total td { font-weight: bold; }
+        
         .purpose-select { margin-left: 10px; padding: 5px; border-radius: 5px; }
+        
         #profile-image-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; cursor: pointer; }
         #profile-image-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); }
-        #profile-image-container .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: white; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        #profile-image-container .overlay { 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.5); 
+            color: white; 
+            border-radius: 50%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            opacity: 0; 
+            transition: opacity 0.3s; 
+        }
         #profile-image-container:hover .overlay { opacity: 1; }
+        
         .notice-list .notice-item { padding: 10px; border-bottom: 1px solid #eee; }
-        .notice-item h4 { margin: 0 0 5px; } .notice-item p { margin: 0; color: #666; }
+        .notice-list .notice-item:last-child { border-bottom: none; }
+        .notice-item h4 { margin: 0 0 5px; } 
+        .notice-item p { margin: 0; color: #666; }
+        
         .phone-input-group { display: flex; align-items: center; }
         .phone-prefix { padding: 10px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 5px 0 0 5px; }
         .phone-input { border-radius: 0 5px 5px 0 !important; }
+
     </style>
 </head>
 <body>
@@ -198,7 +339,7 @@
             } else {
                  const docSnap = await getDoc(doc(db, "members", user.uid));
                 if (!docSnap.exists()) {
-                     window.location.href = 'complete-profile.html';
+                     window.location.replace('complete-profile.html');
                      return;
                 }
                 loadProfileForEditing(docSnap.data());
@@ -209,11 +350,14 @@
             document.body.style.display = 'block';
 
         } else {
-            window.location.href = 'index.html';
+            // যদি ব্যবহারকারী লগআউট হয়, তাকে লোডার পেজে পাঠানো হবে
+            window.location.replace('index.html');
         }
     });
     
-    document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        signOut(auth).catch(error => console.error("Sign out error", error));
+    });
 
     async function loadAllData() {
         await loadHomeNotices();
@@ -425,4 +569,70 @@
     });
 
     document.getElementById('photoUpdateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const statusP = document.getElementById('photoUploadStatus');
+        statusP.textContent = 'ছবি আপলোড হচ্ছে...';
+        statusP.style.display = 'block';
+
+        const photoFile = document.getElementById('newProfilePhoto').files[0];
+        const formData = new FormData();
+        formData.append('file', photoFile);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        
+        try {
+            const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+            if (!response.ok) throw new Error('Image upload failed');
+            const data = await response.json();
+            
+            await updateDoc(doc(db, "members", currentUser.uid), { img: data.secure_url });
+            alert("ছবি সফলভাবে আপডেট হয়েছে!");
+            location.reload();
+        } catch (error) {
+            alert("ছবি আপলোড করতে সমস্যা হয়েছে: " + error.message);
+            statusP.style.display = 'none';
+        }
+    });
+
+    window.showPage = function(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId)?.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+            const onclickAttr = item.getAttribute('onclick');
+            if (onclickAttr && onclickAttr.includes(pageId)) item.classList.add('active');
+        });
+    }
     
+    function calculateAge(dateString) {
+        if (!dateString) return 'N/A';
+        const parts = dateString.split('-');
+        const birthDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        return Math.abs(new Date(Date.now() - birthDate.getTime()).getUTCFullYear() - 1970);
+    }
+
+    window.showMemberDetails = function(id) {
+        const member = membersData.find(m => m.id === id);
+        if (member) {
+            document.getElementById('modalImg').src = member.img || 'https://via.placeholder.com/100';
+            document.getElementById('modalName').innerText = member.name;
+            document.getElementById('modalDob').innerText = member.dob || 'N/A';
+            document.getElementById('modalAge').innerText = calculateAge(member.dob) + ' বছর';
+            document.getElementById('modalPhone').innerText = member.phone || 'N/A';
+            document.getElementById('modalBlood').innerText = member.blood || 'N/A';
+            document.getElementById('modalIncome').innerText = member.income || 'N/A';
+            document.getElementById('modalLocation').innerText = member.location || 'N/A';
+            document.getElementById('memberModal').style.display = "block";
+        }
+    }
+    window.closeModal = (modalId) => document.getElementById(modalId).style.display = "none";
+    window.openModal = (modalId) => document.getElementById(modalId).style.display = "block";
+    window.filterList = (inputId, listSelector) => {
+        const filter = document.getElementById(inputId).value.toLowerCase();
+        document.querySelectorAll(listSelector).forEach(item => {
+            item.style.display = item.textContent.toLowerCase().includes(filter) ? "" : "none";
+        });
+    }
+    window.onclick = (event) => { if (event.target.classList.contains('modal')) event.target.style.display = "none"; }
+</script>
+</body>
+</html>
