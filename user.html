@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হিজলী দিঘাপাড়া যুব সংঘ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body { display: none; } 
+        :root { --primary-color: #16a085; --secondary-color: #e74c3c; --light-gray: #f0f2f5; --dark-text: #2c3e50; --light-text: #666; --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background-color: var(--light-gray); color: var(--dark-text); padding-bottom: 80px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; }
+        header h1 { font-size: 1.6rem; margin: 0; }
+        header p { font-size: 0.9rem; margin: 5px 0 0; }
+        header .established { display: inline-block; background-color: white; color: var(--primary-color); padding: 5px 15px; border-radius: 15px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        .page { display: none; padding: 15px; animation: fadeIn 0.5s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background-color: white; padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 20px; }
+        h2 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; }
+        .search-bar { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; }
+        #home-section .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .feature-card-v2 { background-color: white; border-radius: 15px; box-shadow: var(--card-shadow); overflow: hidden; display: flex; flex-direction: column; text-align: center; cursor: pointer; }
+        .feature-card-v2-top { padding: 15px; color: white; }
+        .feature-card-v2-top i { font-size: 2rem; margin-bottom: 5px; }
+        .feature-card-v2-top h3 { margin: 0; font-size: 1rem; }
+        .feature-card-v2-bottom { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .feature-card-v2-bottom p { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--light-text); }
+        .feature-card-v2-bottom button { border: none; padding: 8px 20px; border-radius: 20px; color: white; font-size: 0.9rem; cursor: pointer; align-self: center; }
+        .card-chada .feature-card-v2-top, .card-chada button { background-color: #00897b; }
+        .card-fee .feature-card-v2-top, .card-fee button { background-color: #689f38; }
+        .card-blood .feature-card-v2-top, .card-blood button { background-color: #d32f2f; }
+        .card-member .feature-card-v2-top, .card-member button { background-color: #6a1b9a; }
+        .member-list .member-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .member-item img { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        #bloodList { display: grid; gap: 15px; }
+        .donor-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .donor-header { display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
+        .donor-header .blood-group { background-color: var(--secondary-color); color: white; font-weight: bold; font-size: 1.2rem; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
+        .donor-header h4 { margin: 0; font-size: 1.1rem; }
+        .donor-details p { margin: 8px 0; font-size: 0.9rem; color: var(--light-text); display: flex; align-items: center; }
+        .donor-details p i { color: var(--primary-color); width: 20px; text-align: center; margin-right: 8px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 20% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal-content img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid var(--primary-color); object-fit: cover; }
+        .modal-content h3 { margin: 0 0 15px; }
+        .info-table { text-align: left; margin: 0 auto; }
+        .info-table td { padding: 5px; }
+        .info-table td:first-child { font-weight: bold; }
+        .data-list .data-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-around; padding: 8px 0; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #95a5a6; font-size: 0.8rem; padding: 5px; cursor: pointer; flex-grow: 1; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary-color); }
+        #profile-section .form-group { margin-bottom: 15px; text-align: left; }
+        #profile-section label { display: block; margin-bottom: 5px; font-weight: 500; }
+        #profile-section input, #profile-section select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+        #profile-section button { width: 100%; padding: 12px; background-color: var(--primary-color); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; }
+        .typewriter-text { overflow: hidden; border-right: .15em solid orange; white-space: nowrap; margin: 0 auto; letter-spacing: .1em; animation: typing 3.5s steps(30, end) infinite, blink-caret .75s step-end infinite; }
+        @keyframes typing { from { width: 0 } to { width: 100% } 50% {width: 100%} 100% {width: 0} }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: orange; } }
+        .donation-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
+        .donation-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .donation-info h4 { margin: 0; } .donation-info p { margin: 5px 0 0; color: #666; }
+        .finance-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .finance-table th, .finance-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .finance-table th { background-color: #f2f2f2; }
+        .finance-total td { font-weight: bold; }
+        .purpose-select { margin-left: 10px; padding: 5px; border-radius: 5px; }
+        #profile-image-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; cursor: pointer; }
+        #profile-image-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); }
+        #profile-image-container .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: white; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        #profile-image-container:hover .overlay { opacity: 1; }
+        .notice-list .notice-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .notice-item h4 { margin: 0 0 5px; } .notice-item p { margin: 0; color: #666; }
+        .phone-input-group { display: flex; align-items: center; }
+        .phone-prefix { padding: 10px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 5px 0 0 5px; }
+        .phone-input { border-radius: 0 5px 5px 0 !important; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>হিজলী দিঘাপাড়া যুব সংঘ</h1>
+        <p>হিজলী দিঘাপাড়া , বাগাতিপাড়া , নাটোর</p>
+        <div class="established">স্থাপিত: ২০২৬</div>
+    </header>
+    <main>
+        <div id="home-section" class="page">
+             <div class="card" style="text-align:center;">
+                <h2>আসসালামু আলাইকুম ওয়া রাহমাতুল্লাহ</h2>
+                <p>আমাদের সংগঠনে আপনাকে স্বাগতম।</p>
+                <p class="typewriter-text">একটি সেবা মূলক অরাজনৈতিক প্রতিষ্ঠান।</p>
+             </div>
+             <div class="features-grid">
+                <div class="feature-card-v2 card-member" onclick="showPage('member-section')"><div class="feature-card-v2-top"><i class="fas fa-users"></i><h3>সদস্য তথ্য</h3></div><div class="feature-card-v2-bottom"><p>সদস্যদের তালিকা ও তথ্য</p><button>দেখুন</button></div></div>
+                <div class="feature-card-v2 card-chada" onclick="showPage('donation-section')"><div class="feature-card-v2-top"><i class="fas fa-hand-holding-heart"></i><h3>ডোনেশন লিস্ট</h3></div><div class="feature-card-v2-bottom"><p>সকল সদস্যদের অনুদান</p><button>দেখুন</button></div></div>
+                <div class="feature-card-v2 card-fee" onclick="showPage('finance-section')"><div class="feature-card-v2-top"><i class="fas fa-chart-line"></i><h3>আয়-ব্যয় হিসাব</h3></div><div class="feature-card-v2-bottom"><p>সংগঠনের মোট হিসাব</p><button>দেখুন</button></div></div>
+                <div class="feature-card-v2 card-blood" onclick="showPage('blood-section')"><div class="feature-card-v2-top"><i class="fas fa-droplet"></i><h3>ব্লাড গ্রুপ</h3></div><div class="feature-card-v2-bottom"><p>রক্তদাতার তালিকা</p><button>দেখুন</button></div></div>
+             </div>
+             <div class="card">
+                <h2><i class="fas fa-bell"></i> সাম্প্রতিক নোটিশ</h2>
+                <div id="homeNoticeBoard" class="notice-list"><p>লোড হচ্ছে...</p></div>
+             </div>
+        </div>
+        <div id="member-section" class="page"><h2><i class="fas fa-users"></i> সদস্য তালিকা</h2><div class="card"><input type="text" id="memberSearch" class="search-bar" onkeyup="filterList('memberSearch', '#memberList .member-item')" placeholder="সদস্য খুঁজুন..."><div id="memberList" class="member-list"><p>লোড হচ্ছে...</p></div></div></div>
+        <div id="donation-section" class="page">
+            <h2><i class="fas fa-hand-holding-heart"></i> ডোনেশন তালিকা</h2>
+            <div class="card"><div id="donationList" class="data-list"><p>লোড হচ্ছে...</p></div></div>
+        </div>
+        <div id="finance-section" class="page">
+            <h2><i class="fas fa-chart-line"></i> আয়-ব্যয় হিসাব</h2>
+            <div class="card"><h3>খাত অনুযায়ী হিসাব</h3><div id="finance-summary"><p>লোড হচ্ছে...</p></div></div>
+        </div>
+        <div id="blood-section" class="page"><h2><i class="fas fa-tint"></i> রক্তদাতার তালিকা</h2><div class="card"><input type="text" id="bloodSearch" class="search-bar" onkeyup="filterList('bloodSearch', '#bloodList .donor-card')" placeholder="গ্রুপ, নাম বা অবস্থান দিয়ে খুঁজুন..."><div id="bloodList" class="data-list"><p>লোড হচ্ছে...</p></div></div></div>
+        <div id="profile-section" class="page">
+            <h2><i class="fas fa-user-edit"></i> আমার প্রোফাইল</h2>
+            <div class="card">
+                <div id="profile-image-container" onclick="openModal('photoUpdateModal')">
+                    <img id="profileImg" src="https://via.placeholder.com/120" alt="প্রোফাইল ছবি">
+                    <div class="overlay"><i class="fas fa-camera"></i>&nbsp;<span>ছবি পরিবর্তন</span></div>
+                </div>
+                <form id="profileEditForm">
+                    <div class="form-group"><label for="profileName">নাম:</label><input type="text" id="profileName" required></div>
+                    <div class="form-group">
+                        <label for="profilePhone">মোবাইল:</label>
+                        <div class="phone-input-group">
+                            <span class="phone-prefix">+880</span>
+                            <input type="tel" id="profilePhone" class="phone-input" placeholder="1xxxxxxxxx" required>
+                        </div>
+                    </div>
+                    <div class="form-group"><label for="profileBlood">রক্তের গ্রুপ:</label><select id="profileBlood" required><option value="">-- নির্বাচন করুন --</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select></div>
+                    <div class="form-group"><label for="profileDob">জন্ম তারিখ:</label><input type="date" id="profileDob" required></div>
+                    <div class="form-group"><label for="profileIncome">পেশা:</label><input type="text" id="profileIncome"></div>
+                    <div class="form-group"><label for="profileLocation">অবস্থান:</label><input type="text" id="profileLocation"></div>
+                    <div class="form-group"><label for="lastDonationDate">শেষ রক্তদানের তারিখ:</label><input type="date" id="lastDonationDate"></div>
+                    <button type="submit">আপডেট করুন</button>
+                    <p id="editUploadStatus" style="display:none; color:#16a085; text-align:center; margin-top:10px;"></p>
+                </form>
+            </div>
+            <div class="card">
+                <h3>আমার ডোনেশন হিস্ট্রি</h3>
+                <div id="myDonationHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+            </div>
+        </div>
+    </main>
+    <div id="memberModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('memberModal')">&times;</span><img id="modalImg" src="" alt="সদস্যের ছবি"><h3 id="modalName"></h3><table class="info-table"><tr><td>জন্ম তারিখ:</td><td id="modalDob"></td></tr><tr><td>বর্তমান বয়স:</td><td id="modalAge"></td></tr><tr><td>মোবাইল নম্বর:</td><td id="modalPhone"></td></tr><tr><td>রক্তের গ্রুপ:</td><td id="modalBlood"></td></tr><tr><td>পেশা:</td><td id="modalIncome"></td></tr><tr><td>বর্তমান অবস্থান:</td><td id="modalLocation"></td></tr></table></div></div>
+    <div id="photoUpdateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('photoUpdateModal')">&times;</span>
+            <h2>ছবি আপডেট করুন</h2>
+            <form id="photoUpdateForm">
+                <div class="form-group"><label for="newProfilePhoto">নতুন ছবি নির্বাচন করুন:</label><input type="file" id="newProfilePhoto" accept="image/*" required></div>
+                <button type="submit">আপলোড করুন</button>
+                <p id="photoUploadStatus" style="display:none; color:#16a085;"></p>
+            </form>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav" id="bottomNav">
+        <div class="nav-item active" onclick="showPage('home-section')"><i class="fas fa-home"></i><span>হোম</span></div>
+        <div class="nav-item" onclick="showPage('member-section')"><i class="fas fa-users"></i><span>সদস্য</span></div>
+        <div class="nav-item" onclick="showPage('donation-section')"><i class="fas fa-hand-holding-heart"></i><span>ডোনেশন</span></div>
+        <div class="nav-item" onclick="showPage('finance-section')"><i class="fas fa-calculator"></i><span>হিসাব</span></div>
+        <div class="nav-item" onclick="showPage('blood-section')"><i class="fas fa-heart"></i><span>রক্ত</span></div>
+        <div class="nav-item" id="profileNavButton" onclick="showPage('profile-section')"><i class="fas fa-user-circle"></i><span>প্রোফাইল</span></div>
+        <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>লগআউট</span></div>
+    </nav>
+    
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, where, query, orderBy } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc", authDomain: "songho-8ef5c.firebaseapp.com", projectId: "songho-8ef5c", storageBucket: "songho-8ef5c.appspot.com", messagingSenderId: "489031747232", appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5", measurementId: "G-5NY15E3XJJ" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dy7sxczfo/image/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'songho_preset';
+    
+    let currentUser = null;
+    let membersData = [];
+    const donationPurposes = {
+        "samajik": "সামাজিক উন্নয়ন", "khela": "খেলাধুলা", "mosjid": "মসজিদ উন্নয়ন",
+        "madrasa": "মাদ্রাসা", "eid": "ঈদ উৎসব", "shikkha": "নামাজ/কুরআন শিক্ষা", "hafez": "হাফেজদের জন্য"
+    };
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            
+            if (user.isAnonymous) {
+                document.getElementById('profileNavButton').style.display = 'none';
+                document.getElementById('logoutBtn').innerHTML = '<i class="fas fa-sign-in-alt"></i><span>লগইন</span>';
+            } else {
+                 const docSnap = await getDoc(doc(db, "members", user.uid));
+                if (!docSnap.exists()) {
+                     window.location.href = 'complete-profile.html';
+                     return;
+                }
+                loadProfileForEditing(docSnap.data());
+            }
+
+            loadAllData();
+            showPage('home-section'); 
+            document.body.style.display = 'block';
+
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+    
+    document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+
+    async function loadAllData() {
+        await loadHomeNotices();
+        await loadMembers();
+        await loadDonations();
+        if(!currentUser.isAnonymous) await loadMyDonations();
+        await loadFinanceData();
+        await loadBloodDonors();
+    }
+
+    async function loadHomeNotices() {
+        const noticeBoard = document.getElementById('homeNoticeBoard');
+        const q = query(collection(db, "notices"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        noticeBoard.innerHTML = '';
+        if (querySnapshot.empty) {
+            noticeBoard.innerHTML = '<p>কোনো নতুন নোটিশ নেই।</p>'; return;
+        }
+        querySnapshot.forEach(doc => {
+            const notice = doc.data();
+            noticeBoard.innerHTML += `<div class="notice-item"><h4>${notice.title}</h4><p>${notice.details}</p></div>`;
+        });
+    }
+
+    async function loadMembers() {
+        const memberList = document.getElementById('memberList');
+        const querySnapshot = await getDocs(collection(db, "members"));
+        memberList.innerHTML = '';
+        membersData = [];
+        querySnapshot.forEach((doc) => {
+            const member = { id: doc.id, ...doc.data() };
+            membersData.push(member);
+            memberList.innerHTML += `<div class="member-item" onclick="showMemberDetails('${member.id}')"><img src="${member.img || 'https://via.placeholder.com/100'}" alt="${member.name}"><div>${member.name}</div></div>`;
+        });
+    }
+
+    async function loadDonations() {
+        const donationList = document.getElementById('donationList');
+        const donationsSnapshot = await getDocs(collection(db, "donations"));
+        const userDonations = {};
+
+        donationsSnapshot.forEach(doc => {
+            const donation = doc.data();
+            if (!userDonations[donation.userId]) {
+                userDonations[donation.userId] = { name: donation.userName, image: donation.userImage, total: 0 };
+            }
+            userDonations[donation.userId].total += Number(donation.amount);
+        });
+
+        donationList.innerHTML = '';
+        if (Object.keys(userDonations).length === 0) {
+            donationList.innerHTML = '<p>এখনো কোনো ডোনেশন যোগ করা হয়নি।</p>'; return;
+        }
+
+        for (const userId in userDonations) {
+            const user = userDonations[userId];
+            donationList.innerHTML += `<div class="donation-item"><img src="${user.image || 'https://via.placeholder.com/50'}" alt="${user.name}"><div class="donation-info"><h4>${user.name}</h4><p>মোট অনুদান: ${user.total.toLocaleString('bn-BD')} টাকা</p></div></div>`;
+        }
+    }
+
+    async function loadFinanceData() {
+        const financeDiv = document.getElementById('finance-summary');
+        const [donationsSnapshot, expensesSnapshot] = await Promise.all([
+            getDocs(collection(db, "donations")), getDocs(collection(db, "expenses"))
+        ]);
+
+        let totalIncome = 0, totalExpense = 0;
+        const purposeTotals = {};
+        for (const key in donationPurposes) { purposeTotals[key] = { income: 0, expense: 0 }; }
+        
+        donationsSnapshot.forEach(doc => {
+            const data = doc.data();
+            totalIncome += Number(data.amount);
+            if (data.purposeKey && purposeTotals[data.purposeKey]) {
+                purposeTotals[data.purposeKey].income += Number(data.amount);
+            }
+        });
+
+        expensesSnapshot.forEach(doc => {
+            const data = doc.data();
+            totalExpense += Number(data.amount);
+            if (data.purposeKey && purposeTotals[data.purposeKey]) {
+                purposeTotals[data.purposeKey].expense += Number(data.amount);
+            }
+        });
+
+        let tableHTML = `<table class="finance-table"><thead><tr><th>খাত</th><th>মোট আয়</th><th>মোট ব্যয়</th><th>বর্তমান ব্যালেন্স</th></tr></thead><tbody>`;
+        for (const key in purposeTotals) {
+            const p = purposeTotals[key];
+            const balance = p.income - p.expense;
+            tableHTML += `<tr><td>${donationPurposes[key]}</td><td>${p.income.toLocaleString('bn-BD')}</td><td>${p.expense.toLocaleString('bn-BD')}</td><td>${balance.toLocaleString('bn-BD')}</td></tr>`;
+        }
+        const totalBalance = totalIncome - totalExpense;
+        tableHTML += `</tbody><tfoot class="finance-total"><tr><td>সর্বমোট</td><td>${totalIncome.toLocaleString('bn-BD')}</td><td>${totalExpense.toLocaleString('bn-BD')}</td><td>${totalBalance.toLocaleString('bn-BD')}</td></tr></tfoot></table>`;
+        financeDiv.innerHTML = tableHTML;
+    }
+
+    async function loadMyDonations() {
+        const historyDiv = document.getElementById('myDonationHistory');
+        if (currentUser.isAnonymous) {
+            historyDiv.innerHTML = '<p>এই ফিচারটি ব্যবহার করতে অনুগ্রহ করে লগইন করুন।</p>'; return;
+        }
+        const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        
+        historyDiv.innerHTML = '';
+        if (querySnapshot.empty) {
+            historyDiv.innerHTML = '<p>আপনি এখনো কোনো অনুদান দেননি।</p>'; return;
+        }
+        querySnapshot.forEach(doc => {
+            const donation = doc.data();
+            let purposeHTML = donation.purposeKey 
+                ? `<strong>উদ্দেশ্য:</strong> ${donationPurposes[donation.purposeKey]}`
+                : `<select class="purpose-select" onchange="updateDonationPurpose('${doc.id}', this.value)">
+                      <option value="">-- উদ্দেশ্য নির্বাচন করুন --</option>
+                      ${Object.entries(donationPurposes).map(([key, value]) => `<option value="${key}">${value}</option>`).join('')}
+                   </select>`;
+            
+            historyDiv.innerHTML += `<div class="data-item"><strong>পরিমাণ:</strong> ${donation.amount} টাকা | <strong>তারিখ:</strong> ${donation.date} | ${purposeHTML}</div>`;
+        });
+    }
+
+    window.updateDonationPurpose = async function(donationId, purposeKey) {
+        if (!purposeKey) return;
+        if (currentUser.isAnonymous) {
+            alert("এই কাজটি করার জন্য আপনাকে লগইন করতে হবে।"); return;
+        }
+        await updateDoc(doc(db, "donations", donationId), { purposeKey: purposeKey });
+        alert("উদ্দেশ্য সফলভাবে আপডেট করা হয়েছে!");
+        loadMyDonations();
+        loadFinanceData();
+    }
+
+    async function loadBloodDonors() {
+        const bloodList = document.getElementById('bloodList');
+        const querySnapshot = await getDocs(collection(db, "members"));
+        bloodList.innerHTML = '';
+        querySnapshot.forEach((doc) => {
+            const donor = doc.data();
+            if(donor.blood) {
+                const nextDonationDate = calculateNextDonationDate(donor.lastDonationDate);
+                bloodList.innerHTML += `<div class="donor-card"><div class="donor-header"><span class="blood-group">${donor.blood}</span><h4>${donor.name}</h4></div><div class="donor-details"><p><i class="fas fa-phone"></i> ${donor.phone}</p><p><i class="fas fa-map-marker-alt"></i> ${donor.location}</p><p><i class="fas fa-calendar-check"></i> পরবর্তী সম্ভাব্য রক্তদান: <strong>${nextDonationDate}</strong></p></div></div>`;
+            }
+        });
+    }
+
+    function calculateNextDonationDate(lastDateStr) {
+        if(!lastDateStr) return 'তথ্য নেই';
+        const lastDate = new Date(lastDateStr);
+        lastDate.setMonth(lastDate.getMonth() + 4);
+        return lastDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function loadProfileForEditing(data) {
+        document.getElementById('profileImg').src = data.img || 'https://via.placeholder.com/120';
+        document.getElementById('profileName').value = data.name || '';
+        document.getElementById('profilePhone').value = data.phone.startsWith('+880') ? data.phone.substring(4) : data.phone;
+        document.getElementById('profileBlood').value = data.blood || '';
+        document.getElementById('profileIncome').value = data.income || '';
+        document.getElementById('profileLocation').value = data.location || '';
+        document.getElementById('lastDonationDate').value = data.lastDonationDate || '';
+        if (data.dob) {
+            const parts = data.dob.split('-');
+            document.getElementById('profileDob').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+    }
+
+    const phoneInput = document.getElementById('profilePhone');
+    phoneInput.addEventListener('input', () => {
+        phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+        if (phoneInput.value.length > 10) phoneInput.value = phoneInput.value.slice(0, 10);
+    });
+
+    document.getElementById('profileEditForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const dob = document.getElementById('profileDob').value;
+        const age = new Date(Date.now() - new Date(dob).getTime()).getUTCFullYear() - 1970;
+        if (age < 10) { alert("সদস্য হওয়ার জন্য বয়স কমপক্ষে ১০ বছর হতে হবে।"); return; }
+        
+        const phone = phoneInput.value;
+        if (phone.length !== 10 || !/^[1][3-9]\d{8}$/.test(phone)) {
+            alert("অনুগ্রহ করে একটি সঠিক ১০ ডিজিটের মোবাইল নম্বর দিন (যেমন: 1712345678)।"); return;
+        }
+        
+        const uploadStatus = document.getElementById('editUploadStatus');
+        uploadStatus.textContent = 'তথ্য আপডেট করা হচ্ছে...';
+        uploadStatus.style.display = 'block';
+
+        const dobParts = dob.split('-');
+        const formattedDob = `${dobParts[2]}-${dobParts[1]}-${dobParts[0]}`;
+
+        const updateData = {
+            name: document.getElementById('profileName').value, phone: `+880${phone}`,
+            blood: document.getElementById('profileBlood').value, dob: formattedDob,
+            income: document.getElementById('profileIncome').value, location: document.getElementById('profileLocation').value,
+            lastDonationDate: document.getElementById('lastDonationDate').value
+        };
+
+        try {
+            await updateDoc(doc(db, "members", currentUser.uid), updateData);
+            alert("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
+            location.reload();
+
+        } catch(error) {
+            alert("আপডেট করতে সমস্যা হয়েছে: " + error.message);
+            uploadStatus.style.display = 'none';
+        }
+    });
+
+    document.getElementById('photoUpdateForm').addEventListener('submit', async (e) => {
+    

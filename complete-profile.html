@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রোফাইল সম্পূর্ণ করুন</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        :root { --primary-color: #16a085; --light-gray: #f0f2f5; }
+        body { font-family: 'Hind Siliguri', sans-serif; background-color: var(--light-gray); margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: 20px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { text-align: center; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; }
+        input, select, button { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { background-color: var(--primary-color); color: white; cursor: pointer; border: none; }
+        #uploadStatus { display:none; color:#16a085; text-align:center; margin-top:10px;}
+        .phone-input-group { display: flex; align-items: center; }
+        .phone-prefix { padding: 12px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 8px 0 0 8px; }
+        .phone-input { border-radius: 0 8px 8px 0 !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>আপনার প্রোফাইল সম্পূর্ণ করুন</h2>
+        <form id="profileForm">
+            <div class="form-group"><label for="name">নাম:</label><input type="text" id="name" required></div>
+            <div class="form-group">
+                <label for="phone">মোবাইল নম্বর:</label>
+                <div class="phone-input-group">
+                    <span class="phone-prefix">+880</span>
+                    <input type="tel" id="phone" class="phone-input" placeholder="1xxxxxxxxx" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="blood">রক্তের গ্রুপ:</label>
+                <select id="blood" required>
+                    <option value="">-- নির্বাচন করুন --</option>
+                    <option value="A+">A+</option> <option value="A-">A-</option>
+                    <option value="B+">B+</option> <option value="B-">B-</option>
+                    <option value="O+">O+</option> <option value="O-">O-</option>
+                    <option value="AB+">AB+</option> <option value="AB-">AB-</option>
+                </select>
+            </div>
+            <div class="form-group"><label for="dob">জন্ম তারিখ:</label><input type="date" id="dob" required></div>
+            <div class="form-group"><label for="income">পেশা:</label><input type="text" id="income"></div>
+            <div class="form-group"><label for="location">বর্তমান অবস্থান:</label><input type="text" id="location"></div>
+            <div class="form-group"><label for="photo">প্রোফাইল ছবি:</label><input type="file" id="photo" accept="image/*" required></div>
+            <button type="submit" id="submitBtn">প্রোফাইল সেভ করুন</button>
+            <p id="uploadStatus"></p>
+        </form>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = { apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc", authDomain: "songho-8ef5c.firebaseapp.com", projectId: "songho-8ef5c", storageBucket: "songho-8ef5c.appspot.com", messagingSenderId: "489031747232", appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5", measurementId: "G-5NY15E3XJJ" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dy7sxczfo/image/upload';
+    const CLOUDINARY_UPLOAD_PRESET = 'songho_preset';
+    
+    let currentUser = null;
+    onAuthStateChanged(auth, user => {
+        if (!user || user.isAnonymous) window.location.href = 'index.html';
+        currentUser = user;
+        document.getElementById('name').value = user.displayName || '';
+    });
+
+    const phoneInput = document.getElementById('phone');
+    phoneInput.addEventListener('input', () => {
+        phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+        if (phoneInput.value.length > 10) {
+            phoneInput.value = phoneInput.value.slice(0, 10);
+        }
+    });
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const dob = document.getElementById('dob').value;
+        const birthDate = new Date(dob);
+        const age = new Date(Date.now() - birthDate.getTime()).getUTCFullYear() - 1970;
+        if (age < 10) {
+            alert("সদস্য হওয়ার জন্য বয়স কমপক্ষে ১০ বছর হতে হবে।");
+            return;
+        }
+
+        const phone = phoneInput.value;
+        if (phone.length !== 10 || !/^[1][3-9]\d{8}$/.test(phone)) {
+            alert("অনুগ্রহ করে একটি সঠিক ১০ ডিজিটের মোবাইল নম্বর দিন (যেমন: 1712345678)।");
+            return;
+        }
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        submitBtn.disabled = true;
+        uploadStatus.textContent = 'ছবি আপলোড হচ্ছে...';
+        uploadStatus.style.display = 'block';
+
+        const photoFile = document.getElementById('photo').files[0];
+        const formData = new FormData();
+        formData.append('file', photoFile);
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+        try {
+            const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
+            if (!response.ok) throw new Error('Image upload failed');
+            const data = await response.json();
+            const photoURL = data.secure_url;
+
+            uploadStatus.textContent = 'প্রোফাইল সেভ করা হচ্ছে...';
+            
+            const dobParts = dob.split('-');
+            const formattedDob = `${dobParts[2]}-${dobParts[1]}-${dobParts[0]}`;
+
+            const memberData = {
+                name: document.getElementById('name').value, phone: `+880${phone}`,
+                blood: document.getElementById('blood').value, dob: formattedDob,
+                income: document.getElementById('income').value, location: document.getElementById('location').value,
+                img: photoURL, email: currentUser.email, uid: currentUser.uid, lastDonationDate: ""
+            };
+
+            await setDoc(doc(db, "members", currentUser.uid), memberData);
+            alert("প্রোফাইল সফলভাবে তৈরি হয়েছে!");
+            window.location.href = 'user.html';
+
+        } catch (error) {
+            alert("একটি সমস্যা হয়েছে: " + error.message);
+            submitBtn.disabled = false;
+            uploadStatus.style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>

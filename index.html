@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন - হিজলী দিঘাপাড়া যুব সংঘ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        :root { --primary-color: #16a085; --secondary-color: #6c757d; --light-gray: #f0f2f5; --dark-text: #2c3e50; }
+        body { font-family: 'Hind Siliguri', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: var(--light-gray); }
+        .login-container { background-color: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); width: 90%; max-width: 400px; text-align: center; }
+        h2 { color: var(--dark-text); margin-bottom: 25px; }
+        .form-group { margin-bottom: 20px; text-align: left; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; background-color: var(--primary-color); color: white; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #errorMessage { color: #e74c3c; margin-top: 15px; display: none; }
+        .toggle-link, .forgot-password { margin-top: 15px; color: var(--primary-color); cursor: pointer; font-size: 0.9rem; }
+        .or-divider { margin: 20px 0; color: #aaa; }
+        .google-btn { background-color: #4285F4; }
+        .guest-btn { background-color: var(--secondary-color); margin-top: 10px; }
+        .google-btn i, .guest-btn i { margin-right: 10px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <form id="loginForm">
+            <h2>সদস্য লগইন</h2>
+            <div class="form-group"><input type="email" id="loginEmail" placeholder="ইমেইল" required></div>
+            <div class="form-group"><input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required></div>
+            <button type="submit">লগইন করুন</button>
+            <p class="forgot-password" onclick="resetPassword()">পাসওয়ার্ড ভুলে গেছেন?</p>
+            <p class="toggle-link" onclick="toggleForms()">অ্যাকাউন্ট নেই? সাইন আপ করুন।</p>
+        </form>
+        <form id="signupForm" style="display:none;">
+            <h2>নতুন অ্যাকাউন্ট তৈরি</h2>
+            <div class="form-group"><input type="email" id="signupEmail" placeholder="ইমেইল" required></div>
+            <div class="form-group"><input type="password" id="signupPassword" placeholder="পাসওয়ার্ড" required></div>
+            <button type="submit">সাইন আপ করুন</button>
+            <p class="toggle-link" onclick="toggleForms()">ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন।</p>
+        </form>
+        <p class="or-divider">---------- বিকল্প ----------</p>
+        <button id="googleSignInBtn" class="google-btn"><i class="fab fa-google"></i> গুগল দিয়ে সাইন ইন করুন</button>
+        <button id="guestSignInBtn" class="guest-btn"><i class="fas fa-user-secret"></i> অতিথি হিসেবে প্রবেশ করুন</button>
+        <p id="errorMessage"></p>
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    
+    const firebaseConfig = { apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc", authDomain: "songho-8ef5c.firebaseapp.com", projectId: "songho-8ef5c", storageBucket: "songho-8ef5c.appspot.com", messagingSenderId: "489031747232", appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5", measurementId: "G-5NY15E3XJJ" };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    
+    const redirectToApp = () => window.location.href = 'user.html';
+
+    document.getElementById('googleSignInBtn').addEventListener('click', () => {
+        signInWithPopup(auth, new GoogleAuthProvider()).then(redirectToApp).catch(handleAuthError);
+    });
+
+    document.getElementById('guestSignInBtn').addEventListener('click', () => {
+        signInAnonymously(auth).then(redirectToApp).catch(handleAuthError);
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        signInWithEmailAndPassword(auth, e.target.loginEmail.value, e.target.loginPassword.value)
+            .then(redirectToApp).catch(handleAuthError);
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        createUserWithEmailAndPassword(auth, e.target.signupEmail.value, e.target.signupPassword.value)
+            .then(redirectToApp).catch(handleAuthError);
+    });
+    
+    window.resetPassword = function() {
+        const email = document.getElementById('loginEmail').value;
+        if (!email) {
+            alert("পাসওয়ার্ড রিসেট করার জন্য অনুগ্রহ করে ইমেইল ফিল্ডটি পূরণ করুন।");
+            return;
+        }
+        sendPasswordResetEmail(auth, email)
+            .then(() => alert("আপনার ইমেইলে একটি পাসওয়ার্ড রিসেট লিঙ্ক পাঠানো হয়েছে।"))
+            .catch((error) => alert("একটি সমস্যা হয়েছে: " + error.message));
+    }
+
+    const errorMessage = document.getElementById('errorMessage');
+    function handleAuthError(error) {
+        errorMessage.textContent = error.code.includes('auth/') ? 'ভুল ইমেইল বা পাসওয়ার্ড।' : 'একটি সমস্যা হয়েছে, আবার চেষ্টা করুন।';
+        errorMessage.style.display = 'block';
+    }
+    window.toggleForms = function() {
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+        signupForm.style.display = signupForm.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+</body>
+</html>
