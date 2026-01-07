@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন - হিজলী দিঘাপাড়া যুব সংঘ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        /* আগের index.html এর CSS কোড এখানে থাকবে */
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- আগের index.html এর HTML কোড এখানে থাকবে -->
+    </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    
+    // ... আগের index.html এর সম্পূর্ণ JavaScript কোড এখানে থাকবে (onAuthStateChanged অংশটি ছাড়া) ...
+    const firebaseConfig = { /* ... */ };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    
+    const redirectToApp = () => window.location.href = 'user.html';
+
+    // ... বাকি সব লগইন, সাইন-আপ, গেস্ট ফাংশন ...
+</script>
+</body>
+</html>
