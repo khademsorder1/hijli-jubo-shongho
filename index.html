@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        :root { --primary-color: #16a085; --secondary-color: #27ae60; --dark-text: #2c3e50; --light-text: #7f8c8d; --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); --error-color: #e74c3c; --success-color: #27ae60; --info-color: #3498db; }
+        :root { --primary-color: #16a085; --secondary-color: #27ae60; --dark-text: #2c3e50; --light-text: #7f8c8d; --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); --error-color: #e74c3c; --success-color: #27ae60; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Hind Siliguri', sans-serif; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         #page-loader { color: white; text-align: center; }
@@ -43,7 +43,6 @@
         .message-box { text-align: center; margin-top: 15px; font-weight: 500; display: none; padding: 12px; border-radius: 8px; line-height: 1.5; }
         .error-message { color: var(--error-color); background-color: #fadbd8; }
         .success-message { color: var(--success-color); background-color: #d4efdf; }
-        .info-message { color: #2980b9; background-color: #d6eaf8; }
         .resend-link { color: var(--primary-color); font-weight: bold; cursor: pointer; text-decoration: underline; }
         .loader-small { width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
     </style>
@@ -80,7 +79,7 @@
     <div class="login-container" id="success-container" style="display: none; padding: 40px; text-align:center;">
         <i class="fas fa-envelope-circle-check" style="color: var(--success-color); font-size: 50px;"></i>
         <h2 style="color: var(--success-color); margin-top:20px;">অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!</h2>
-        <p id="success-message" style="color: var(--dark-text); font-size: 1.1rem; line-height: 1.6;">আপনার প্রোফাইল তৈরির প্রক্রিয়া প্রায় শেষ। আপনার ইমেইল ইনবক্সে একটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। অনুগ্রহ করে লিংকে ক্লিক করে আপনার অ্যাকাউন্টটি সক্রিয় করুন।</p>
+        <p style="color: var(--dark-text); font-size: 1.1rem; line-height: 1.6;">আপনার ইমেইল ইনবক্সে একটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। অনুগ্রহ করে লিংকে ক্লিক করে আপনার অ্যাকাউন্টটি সক্রিয় করুন।</p>
         <button class="btn btn-primary" style="margin-top: 20px;" onclick="window.location.reload()">লগইন পেজে ফিরে যান</button>
     </div>
     
@@ -137,33 +136,32 @@
 
                 function toggleMode() {
                     isLoginMode = !isLoginMode;
-                    showMessage('');
-                    authForm.reset();
+                    showMessage(''); authForm.reset();
                     formTitle.textContent = isLoginMode ? 'লগইন করুন' : 'অ্যাকাউন্ট তৈরি করুন';
                     submitBtn.innerHTML = isLoginMode ? 'লগইন করুন' : 'অ্যাকাউন্ট তৈরি করুন';
                     toggleModeBtn.textContent = isLoginMode ? 'অ্যাকাউন্ট নেই? তৈরি করুন' : 'ইতিমধ্যে অ্যাকাউন্ট আছে? লগইন করুন';
                     confirmPasswordGroup.style.display = isLoginMode ? 'none' : 'block';
                 }
 
-                function handleFormSubmit(e) {
-                    e.preventDefault();
-                    toggleLoading(true);
-                    if (isLoginMode) handleLogin(); else handleSignup();
-                }
+                function handleFormSubmit(e) { e.preventDefault(); if (isLoginMode) handleLogin(); else handleSignup(); }
 
                 async function handleLogin() {
+                    toggleLoading(true);
+                    showMessage('');
                     try {
                         const userCredential = await auth.signInWithEmailAndPassword(emailInput.value, passwordInput.value);
                         if (!userCredential.user.emailVerified) {
                             unverifiedUser = userCredential.user;
                             await auth.signOut();
-                            showMessage("আপনার ইমেইল ভেরিফাই করা হয়নি। অনুগ্রহ করে ইনবক্স চেক করুন। <span class='resend-link' onclick='resendVerification()'>আবার পাঠান</span>", 'error');
+                            showMessage("আপনার ইমেইল ভেরিফাই করা হয়নি। অনুগ্রহ করে ইনবক্স চেক করুন। <span class='resend-link' onclick='window.resendVerification()'>আবার পাঠান</span>", 'error');
                         }
                     } catch (error) { handleAuthError(error); } 
                     finally { toggleLoading(false); }
                 }
                 
                 async function handleSignup() {
+                    toggleLoading(true);
+                    showMessage('');
                     if (passwordInput.value !== confirmPasswordInput.value) {
                         showMessage("দুটি পাসওয়ার্ড মেলেনি।", 'error');
                         toggleLoading(false); return;
@@ -179,17 +177,16 @@
                 }
 
                 window.resendVerification = async () => {
-                    if(unverifiedUser) {
+                    if (unverifiedUser) {
                         try {
                             await unverifiedUser.sendEmailVerification();
                             showMessage("একটি নতুন ভেরিফিকেশন ইমেইল পাঠানো হয়েছে।", 'success');
-                        } catch (error) {
-                            showMessage("ইমেইল পাঠাতে সমস্যা হয়েছে।", 'error');
-                        }
+                        } catch (error) { showMessage("ইমেইল পাঠাতে সমস্যা হয়েছে।", 'error'); }
                     }
-                }
+                };
 
                 async function handleGoogleLogin() {
+                    showMessage('');
                      try {
                         const provider = new firebase.auth.GoogleAuthProvider();
                         const result = await auth.signInWithPopup(provider);
@@ -200,16 +197,18 @@
                     } catch(error) { handleAuthError(error); }
                 }
 
-                async function handleGuestLogin() { try { await auth.signInAnonymously(); } catch(error) { handleAuthError(error); } }
+                async function handleGuestLogin() { showMessage(''); try { await auth.signInAnonymously(); } catch(error) { handleAuthError(error); } }
                 
                 function handleAuthError(error) {
-                    let message = "একটি সমস্যা হয়েছে।";
+                    console.log("Firebase Auth Error Code:", error.code); // This will help debug
+                    let message = "একটি অজানা সমস্যা হয়েছে।";
                     switch (error.code) {
                         case 'auth/wrong-password': message = "আপনার পাসওয়ার্ডটি ভুল হয়েছে।"; break;
                         case 'auth/user-not-found': message = "এই ইমেইল দিয়ে কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি।"; break;
-                        case 'auth/email-already-in-use': message = "এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট তৈরি করা আছে।"; break;
-                        case 'auth/weak-password': message = "পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।"; break;
-                        case 'auth/invalid-email': message = "অনুগ্রহ করে একটি সঠিক ইমেইল দিন।"; break;
+                        case 'auth/email-already-in-use': message = "এই ইমেইল দিয়ে ইতিমধ্যে একটি অ্যাকাউন্ট তৈরি করা আছে।"; break;
+                        case 'auth/weak-password': message = "পাসওয়ার্ডটি খুব দুর্বল। কমপক্ষে ৬ অক্ষরের হতে হবে।"; break;
+                        case 'auth/invalid-email': message = "অনুগ্রহ করে একটি সঠিক ইমেইল ঠিকানা দিন।"; break;
+                        case 'auth/network-request-failed': message = "ইন্টারনেট সংযোগে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"; break;
                     }
                     showMessage(message, 'error');
                 }
