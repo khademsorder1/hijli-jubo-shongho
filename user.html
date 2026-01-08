@@ -16,6 +16,8 @@
             --dark-text: #2c3e50; 
             --light-text: #666; 
             --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
+            --success-color: #2ecc71;
+            --info-color: #3498db;
         }
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         
@@ -112,13 +114,15 @@
         .card-fee .feature-card-v2-top, .card-fee button { background-color: #689f38; }
         .card-blood .feature-card-v2-top, .card-blood button { background-color: #d32f2f; }
         .card-member .feature-card-v2-top, .card-member button { background-color: #6a1b9a; }
-        
+        .card-send-donation .feature-card-v2-top, .card-send-donation button { background-color: var(--info-color); }
+
         .member-list .member-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .member-item img { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
         
         #bloodList { display: grid; gap: 15px; }
         .donor-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .donor-header { display: flex; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
+        .donor-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
+        .donor-header-info { display: flex; align-items: center; }
         .donor-header .blood-group { 
             background-color: var(--secondary-color); 
             color: white; 
@@ -134,6 +138,8 @@
             flex-shrink: 0; 
         }
         .donor-header h4 { margin: 0; font-size: 1.1rem; }
+        .donor-status { font-weight: bold; font-size: 0.9rem; padding: 4px 10px; border-radius: 12px; }
+        .donor-status.ready { color: white; background-color: var(--success-color); }
         .donor-details p { margin: 8px 0; font-size: 0.9rem; color: var(--light-text); display: flex; align-items: center; }
         .donor-details p i { color: var(--primary-color); width: 20px; text-align: center; margin-right: 8px; }
         
@@ -178,15 +184,21 @@
             50% { border-color: orange; } 
         }
         
-        .donation-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; }
-        .donation-item img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .donation-item { background: #fff; border: 1px solid #f0f0f0; border-radius: 8px; margin-bottom: 10px; }
+        .donation-header { display: flex; align-items: center; padding: 15px; cursor: pointer; }
+        .donation-header img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
         .donation-info h4 { margin: 0; } 
         .donation-info p { margin: 5px 0 0; color: #666; }
+        .donation-details-list { display: none; padding: 0 15px 15px; border-top: 1px solid #f0f0f0; }
+        .donation-details-list .detail-item { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        .donation-details-list .detail-item:last-child { border-bottom: none; }
         
         .finance-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .finance-table th, .finance-table td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        .finance-table th { background-color: #f2f2f2; }
-        .finance-total td { font-weight: bold; }
+        .finance-table th, .finance-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .finance-table thead th { background-color: var(--primary-color); color: white; }
+        .finance-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        .finance-table tbody tr:hover { background-color: #f1f1f1; }
+        .finance-total td { font-weight: bold; background-color: #e0f2f1; color: var(--dark-text); }
         
         .purpose-select { margin-left: 10px; padding: 5px; border-radius: 5px; }
         
@@ -218,7 +230,6 @@
         .phone-input-group { display: flex; align-items: center; }
         .phone-prefix { padding: 10px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 5px 0 0 5px; }
         .phone-input { border-radius: 0 5px 5px 0 !important; }
-
     </style>
 </head>
 <body>
@@ -239,6 +250,7 @@
                 <div class="feature-card-v2 card-chada" onclick="showPage('donation-section')"><div class="feature-card-v2-top"><i class="fas fa-hand-holding-heart"></i><h3>ডোনেশন লিস্ট</h3></div><div class="feature-card-v2-bottom"><p>সকল সদস্যদের অনুদান</p><button>দেখুন</button></div></div>
                 <div class="feature-card-v2 card-fee" onclick="showPage('finance-section')"><div class="feature-card-v2-top"><i class="fas fa-chart-line"></i><h3>আয়-ব্যয় হিসাব</h3></div><div class="feature-card-v2-bottom"><p>সংগঠনের মোট হিসাব</p><button>দেখুন</button></div></div>
                 <div class="feature-card-v2 card-blood" onclick="showPage('blood-section')"><div class="feature-card-v2-top"><i class="fas fa-droplet"></i><h3>ব্লাড গ্রুপ</h3></div><div class="feature-card-v2-bottom"><p>রক্তদাতার তালিকা</p><button>দেখুন</button></div></div>
+                <div class="feature-card-v2 card-send-donation" onclick="openModal('donationInfoModal')"><div class="feature-card-v2-top"><i class="fas fa-paper-plane"></i><h3>অনুদান পাঠান</h3></div><div class="feature-card-v2-bottom"><p>সংগঠনে অনুদান পাঠান</p><button>দেখুন</button></div></div>
              </div>
              <div class="card">
                 <h2><i class="fas fa-bell"></i> সাম্প্রতিক নোটিশ</h2>
@@ -281,7 +293,7 @@
                 </form>
             </div>
             <div class="card">
-                <h3>আমার ডোনেশন হিস্ট্রি</h3>
+                <h3><i class="fas fa-history"></i> আমার ডোনেশন হিস্ট্রি</h3>
                 <div id="myDonationHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
             </div>
         </div>
@@ -296,6 +308,18 @@
                 <button type="submit">আপলোড করুন</button>
                 <p id="photoUploadStatus" style="display:none; color:#16a085;"></p>
             </form>
+        </div>
+    </div>
+    <div id="donationInfoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('donationInfoModal')">&times;</span>
+            <h2>অনুদান পাঠান</h2>
+            <p>আপনার অনুদান আমাদের কার্যক্রমকে গতিশীল করতে সাহায্য করবে।</p>
+            <table class="info-table">
+                <tr><td><strong>বিকাশ (পার্সোনাল):</strong></td><td>01611173634</td></tr>
+                <tr><td><strong>নগদ (পার্সোনাল):</strong></td><td>01611173634</td></tr>
+            </table>
+            <p style="color: var(--secondary-color); margin-top: 15px;">অনুদান পাঠানোর পর আপনার পেমেন্ট যাচাই করে সিস্টেমে আপডেট করা হবে।</p>
         </div>
     </div>
     
@@ -350,7 +374,6 @@
             document.body.style.display = 'block';
 
         } else {
-            // যদি ব্যবহারকারী লগআউট হয়, তাকে লোডার পেজে পাঠানো হবে
             window.location.replace('index.html');
         }
     });
@@ -396,15 +419,21 @@
 
     async function loadDonations() {
         const donationList = document.getElementById('donationList');
-        const donationsSnapshot = await getDocs(collection(db, "donations"));
+        const donationsSnapshot = await getDocs(query(collection(db, "donations"), orderBy("date", "desc")));
         const userDonations = {};
 
         donationsSnapshot.forEach(doc => {
             const donation = doc.data();
             if (!userDonations[donation.userId]) {
-                userDonations[donation.userId] = { name: donation.userName, image: donation.userImage, total: 0 };
+                userDonations[donation.userId] = { 
+                    name: donation.userName, 
+                    image: donation.userImage, 
+                    total: 0, 
+                    donations: [] 
+                };
             }
             userDonations[donation.userId].total += Number(donation.amount);
+            userDonations[donation.userId].donations.push(donation);
         });
 
         donationList.innerHTML = '';
@@ -414,7 +443,21 @@
 
         for (const userId in userDonations) {
             const user = userDonations[userId];
-            donationList.innerHTML += `<div class="donation-item"><img src="${user.image || 'https://via.placeholder.com/50'}" alt="${user.name}"><div class="donation-info"><h4>${user.name}</h4><p>মোট অনুদান: ${user.total.toLocaleString('bn-BD')} টাকা</p></div></div>`;
+            let detailsHTML = user.donations.map(d => 
+                `<div class="detail-item"><strong>পরিমাণ:</strong> ${d.amount} টাকা | <strong>তারিখ:</strong> ${d.date} | <strong>উদ্দেশ্য:</strong> ${donationPurposes[d.purposeKey] || 'N/A'}</div>`
+            ).join('');
+
+            donationList.innerHTML += `
+                <div class="donation-item">
+                    <div class="donation-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
+                        <img src="${user.image || 'https://via.placeholder.com/50'}" alt="${user.name}">
+                        <div class="donation-info">
+                            <h4>${user.name}</h4>
+                            <p>মোট অনুদান: ${user.total.toLocaleString('bn-BD')} টাকা</p>
+                        </div>
+                    </div>
+                    <div class="donation-details-list">${detailsHTML}</div>
+                </div>`;
         }
     }
 
@@ -460,7 +503,7 @@
         if (currentUser.isAnonymous) {
             historyDiv.innerHTML = '<p>এই ফিচারটি ব্যবহার করতে অনুগ্রহ করে লগইন করুন।</p>'; return;
         }
-        const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid));
+        const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid), orderBy("date", "desc"));
         const querySnapshot = await getDocs(q);
         
         historyDiv.innerHTML = '';
@@ -498,17 +541,37 @@
         querySnapshot.forEach((doc) => {
             const donor = doc.data();
             if(donor.blood) {
-                const nextDonationDate = calculateNextDonationDate(donor.lastDonationDate);
-                bloodList.innerHTML += `<div class="donor-card"><div class="donor-header"><span class="blood-group">${donor.blood}</span><h4>${donor.name}</h4></div><div class="donor-details"><p><i class="fas fa-phone"></i> ${donor.phone}</p><p><i class="fas fa-map-marker-alt"></i> ${donor.location}</p><p><i class="fas fa-calendar-check"></i> পরবর্তী সম্ভাব্য রক্তদান: <strong>${nextDonationDate}</strong></p></div></div>`;
+                const { nextDate, isReady } = calculateNextDonationDate(donor.lastDonationDate);
+                const statusHTML = isReady ? `<span class="donor-status ready">প্রস্তুত</span>` : '';
+                bloodList.innerHTML += `
+                    <div class="donor-card">
+                        <div class="donor-header">
+                           <div class="donor-header-info">
+                             <span class="blood-group">${donor.blood}</span>
+                             <h4>${donor.name}</h4>
+                           </div>
+                           ${statusHTML}
+                        </div>
+                        <div class="donor-details">
+                            <p><i class="fas fa-phone"></i> ${donor.phone}</p>
+                            <p><i class="fas fa-map-marker-alt"></i> ${donor.location}</p>
+                            <p><i class="fas fa-calendar-check"></i> পরবর্তী সম্ভাব্য রক্তদান: <strong>${nextDate}</strong></p>
+                        </div>
+                    </div>`;
             }
         });
     }
 
     function calculateNextDonationDate(lastDateStr) {
-        if(!lastDateStr) return 'তথ্য নেই';
+        if(!lastDateStr) return { nextDate: 'তথ্য নেই', isReady: true };
         const lastDate = new Date(lastDateStr);
-        lastDate.setMonth(lastDate.getMonth() + 4);
-        return lastDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+        const nextDate = new Date(lastDate);
+        nextDate.setMonth(nextDate.getMonth() + 4);
+        const isReady = new Date() > nextDate;
+        return { 
+            nextDate: nextDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }),
+            isReady: isReady
+        };
     }
 
     function loadProfileForEditing(data) {
