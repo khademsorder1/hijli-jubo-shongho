@@ -18,6 +18,7 @@
             --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
             --success-color: #2ecc71;
             --info-color: #3498db;
+            --error-color: #e74c3c;
         }
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         
@@ -230,6 +231,8 @@
         .phone-input-group { display: flex; align-items: center; }
         .phone-prefix { padding: 10px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 5px 0 0 5px; }
         .phone-input { border-radius: 0 5px 5px 0 !important; }
+
+        .error-message { color: var(--error-color); }
     </style>
 </head>
 <body>
@@ -353,6 +356,10 @@
         "madrasa": "মাদ্রাসা", "eid": "ঈদ উৎসব", "shikkha": "নামাজ/কুরআন শিক্ষা", "hafez": "হাফেজদের জন্য"
     };
 
+    const showError = (element, message) => {
+        element.innerHTML = `<p class="error-message">${message}</p>`;
+    };
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
@@ -383,119 +390,143 @@
     });
 
     async function loadAllData() {
-        await loadHomeNotices();
-        await loadMembers();
-        await loadDonations();
-        if(!currentUser.isAnonymous) await loadMyDonations();
-        await loadFinanceData();
-        await loadBloodDonors();
+        await Promise.all([
+            loadHomeNotices(),
+            loadMembers(),
+            loadDonations(),
+            loadFinanceData(),
+            loadBloodDonors(),
+            !currentUser.isAnonymous ? loadMyDonations() : Promise.resolve()
+        ]);
     }
 
     async function loadHomeNotices() {
         const noticeBoard = document.getElementById('homeNoticeBoard');
-        const q = query(collection(db, "notices"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        noticeBoard.innerHTML = '';
-        if (querySnapshot.empty) {
-            noticeBoard.innerHTML = '<p>কোনো নতুন নোটিশ নেই।</p>'; return;
+        try {
+            const q = query(collection(db, "notices"), orderBy("createdAt", "desc"));
+            const querySnapshot = await getDocs(q);
+            if (querySnapshot.empty) {
+                noticeBoard.innerHTML = '<p>কোনো নতুন নোটিশ নেই।</p>'; return;
+            }
+            noticeBoard.innerHTML = '';
+            querySnapshot.forEach(doc => {
+                const notice = doc.data();
+                noticeBoard.innerHTML += `<div class="notice-item"><h4>${notice.title}</h4><p>${notice.details}</p></div>`;
+            });
+        } catch(error) {
+            console.error("Error loading notices:", error);
+            showError(noticeBoard, "নোটিশ লোড করা সম্ভব হয়নি।");
         }
-        querySnapshot.forEach(doc => {
-            const notice = doc.data();
-            noticeBoard.innerHTML += `<div class="notice-item"><h4>${notice.title}</h4><p>${notice.details}</p></div>`;
-        });
     }
 
     async function loadMembers() {
         const memberList = document.getElementById('memberList');
-        const querySnapshot = await getDocs(collection(db, "members"));
-        memberList.innerHTML = '';
-        membersData = [];
-        querySnapshot.forEach((doc) => {
-            const member = { id: doc.id, ...doc.data() };
-            membersData.push(member);
-            memberList.innerHTML += `<div class="member-item" onclick="showMemberDetails('${member.id}')"><img src="${member.img || 'https://via.placeholder.com/100'}" alt="${member.name}"><div>${member.name}</div></div>`;
-        });
+        try {
+            const querySnapshot = await getDocs(collection(db, "members"));
+            if (querySnapshot.empty) {
+                 memberList.innerHTML = '<p>কোনো সদস্য খুঁজে পাওয়া যায়নি।</p>'; return;
+            }
+            memberList.innerHTML = '';
+            membersData = [];
+            querySnapshot.forEach((doc) => {
+                const member = { id: doc.id, ...doc.data() };
+                membersData.push(member);
+                memberList.innerHTML += `<div class="member-item" onclick="showMemberDetails('${member.id}')"><img src="${member.img || 'https://via.placeholder.com/100'}" alt="${member.name}"><div>${member.name}</div></div>`;
+            });
+        } catch(error) {
+            console.error("Error loading members:", error);
+            showError(memberList, "সদস্য তালিকা লোড করা সম্ভব হয়নি।");
+        }
     }
 
     async function loadDonations() {
         const donationList = document.getElementById('donationList');
-        const donationsSnapshot = await getDocs(query(collection(db, "donations"), orderBy("date", "desc")));
-        const userDonations = {};
-
-        donationsSnapshot.forEach(doc => {
-            const donation = doc.data();
-            if (!userDonations[donation.userId]) {
-                userDonations[donation.userId] = { 
-                    name: donation.userName, 
-                    image: donation.userImage, 
-                    total: 0, 
-                    donations: [] 
-                };
+        try {
+            const donationsSnapshot = await getDocs(query(collection(db, "donations"), orderBy("date", "desc")));
+            if (donationsSnapshot.empty) {
+                donationList.innerHTML = '<p>এখনো কোনো ডোনেশন যোগ করা হয়নি।</p>'; return;
             }
-            userDonations[donation.userId].total += Number(donation.amount);
-            userDonations[donation.userId].donations.push(donation);
-        });
 
-        donationList.innerHTML = '';
-        if (Object.keys(userDonations).length === 0) {
-            donationList.innerHTML = '<p>এখনো কোনো ডোনেশন যোগ করা হয়নি।</p>'; return;
-        }
+            const userDonations = {};
+            donationsSnapshot.forEach(doc => {
+                const donation = doc.data();
+                if (!userDonations[donation.userId]) {
+                    userDonations[donation.userId] = { 
+                        name: donation.userName || 'নাম নেই', 
+                        image: donation.userImage, 
+                        total: 0, 
+                        donations: [] 
+                    };
+                }
+                userDonations[donation.userId].total += Number(donation.amount);
+                userDonations[donation.userId].donations.push(donation);
+            });
 
-        for (const userId in userDonations) {
-            const user = userDonations[userId];
-            let detailsHTML = user.donations.map(d => 
-                `<div class="detail-item"><strong>পরিমাণ:</strong> ${d.amount} টাকা | <strong>তারিখ:</strong> ${d.date} | <strong>উদ্দেশ্য:</strong> ${donationPurposes[d.purposeKey] || 'N/A'}</div>`
-            ).join('');
+            donationList.innerHTML = '';
+            for (const userId in userDonations) {
+                const user = userDonations[userId];
+                let detailsHTML = user.donations.map(d => 
+                    `<div class="detail-item"><strong>পরিমাণ:</strong> ${d.amount} টাকা | <strong>তারিখ:</strong> ${d.date} | <strong>উদ্দেশ্য:</strong> ${donationPurposes[d.purposeKey] || 'অনির্দিষ্ট'}</div>`
+                ).join('');
 
-            donationList.innerHTML += `
-                <div class="donation-item">
-                    <div class="donation-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
-                        <img src="${user.image || 'https://via.placeholder.com/50'}" alt="${user.name}">
-                        <div class="donation-info">
-                            <h4>${user.name}</h4>
-                            <p>মোট অনুদান: ${user.total.toLocaleString('bn-BD')} টাকা</p>
+                donationList.innerHTML += `
+                    <div class="donation-item">
+                        <div class="donation-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'block' ? 'none' : 'block';">
+                            <img src="${user.image || 'https://via.placeholder.com/50'}" alt="${user.name}">
+                            <div class="donation-info">
+                                <h4>${user.name}</h4>
+                                <p>মোট অনুদান: ${user.total.toLocaleString('bn-BD')} টাকা</p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="donation-details-list">${detailsHTML}</div>
-                </div>`;
+                        <div class="donation-details-list">${detailsHTML}</div>
+                    </div>`;
+            }
+        } catch(error) {
+            console.error("Error loading donations:", error);
+            showError(donationList, "ডোনেশন তালিকা লোড করা সম্ভব হয়নি।");
         }
     }
 
     async function loadFinanceData() {
         const financeDiv = document.getElementById('finance-summary');
-        const [donationsSnapshot, expensesSnapshot] = await Promise.all([
-            getDocs(collection(db, "donations")), getDocs(collection(db, "expenses"))
-        ]);
+        try {
+            const [donationsSnapshot, expensesSnapshot] = await Promise.all([
+                getDocs(collection(db, "donations")), getDocs(collection(db, "expenses"))
+            ]);
 
-        let totalIncome = 0, totalExpense = 0;
-        const purposeTotals = {};
-        for (const key in donationPurposes) { purposeTotals[key] = { income: 0, expense: 0 }; }
-        
-        donationsSnapshot.forEach(doc => {
-            const data = doc.data();
-            totalIncome += Number(data.amount);
-            if (data.purposeKey && purposeTotals[data.purposeKey]) {
-                purposeTotals[data.purposeKey].income += Number(data.amount);
+            let totalIncome = 0, totalExpense = 0;
+            const purposeTotals = {};
+            for (const key in donationPurposes) { purposeTotals[key] = { income: 0, expense: 0 }; }
+            
+            donationsSnapshot.forEach(doc => {
+                const data = doc.data();
+                totalIncome += Number(data.amount);
+                if (data.purposeKey && purposeTotals[data.purposeKey]) {
+                    purposeTotals[data.purposeKey].income += Number(data.amount);
+                }
+            });
+
+            expensesSnapshot.forEach(doc => {
+                const data = doc.data();
+                totalExpense += Number(data.amount);
+                if (data.purposeKey && purposeTotals[data.purposeKey]) {
+                    purposeTotals[data.purposeKey].expense += Number(data.amount);
+                }
+            });
+
+            let tableHTML = `<table class="finance-table"><thead><tr><th>খাত</th><th>মোট আয়</th><th>মোট ব্যয়</th><th>বর্তমান ব্যালেন্স</th></tr></thead><tbody>`;
+            for (const key in purposeTotals) {
+                const p = purposeTotals[key];
+                const balance = p.income - p.expense;
+                tableHTML += `<tr><td>${donationPurposes[key]}</td><td>${p.income.toLocaleString('bn-BD')}</td><td>${p.expense.toLocaleString('bn-BD')}</td><td>${balance.toLocaleString('bn-BD')}</td></tr>`;
             }
-        });
-
-        expensesSnapshot.forEach(doc => {
-            const data = doc.data();
-            totalExpense += Number(data.amount);
-            if (data.purposeKey && purposeTotals[data.purposeKey]) {
-                purposeTotals[data.purposeKey].expense += Number(data.amount);
-            }
-        });
-
-        let tableHTML = `<table class="finance-table"><thead><tr><th>খাত</th><th>মোট আয়</th><th>মোট ব্যয়</th><th>বর্তমান ব্যালেন্স</th></tr></thead><tbody>`;
-        for (const key in purposeTotals) {
-            const p = purposeTotals[key];
-            const balance = p.income - p.expense;
-            tableHTML += `<tr><td>${donationPurposes[key]}</td><td>${p.income.toLocaleString('bn-BD')}</td><td>${p.expense.toLocaleString('bn-BD')}</td><td>${balance.toLocaleString('bn-BD')}</td></tr>`;
+            const totalBalance = totalIncome - totalExpense;
+            tableHTML += `</tbody><tfoot class="finance-total"><tr><td>সর্বমোট</td><td>${totalIncome.toLocaleString('bn-BD')}</td><td>${totalExpense.toLocaleString('bn-BD')}</td><td>${totalBalance.toLocaleString('bn-BD')}</td></tr></tfoot></table>`;
+            financeDiv.innerHTML = tableHTML;
+        } catch(error) {
+            console.error("Error loading finance data:", error);
+            showError(financeDiv, "আয়-ব্যয় হিসাব লোড করা সম্ভব হয়নি।");
         }
-        const totalBalance = totalIncome - totalExpense;
-        tableHTML += `</tbody><tfoot class="finance-total"><tr><td>সর্বমোট</td><td>${totalIncome.toLocaleString('bn-BD')}</td><td>${totalExpense.toLocaleString('bn-BD')}</td><td>${totalBalance.toLocaleString('bn-BD')}</td></tr></tfoot></table>`;
-        financeDiv.innerHTML = tableHTML;
     }
 
     async function loadMyDonations() {
@@ -503,24 +534,29 @@
         if (currentUser.isAnonymous) {
             historyDiv.innerHTML = '<p>এই ফিচারটি ব্যবহার করতে অনুগ্রহ করে লগইন করুন।</p>'; return;
         }
-        const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        historyDiv.innerHTML = '';
-        if (querySnapshot.empty) {
-            historyDiv.innerHTML = '<p>আপনি এখনো কোনো অনুদান দেননি।</p>'; return;
-        }
-        querySnapshot.forEach(doc => {
-            const donation = doc.data();
-            let purposeHTML = donation.purposeKey 
-                ? `<strong>উদ্দেশ্য:</strong> ${donationPurposes[donation.purposeKey]}`
-                : `<select class="purpose-select" onchange="updateDonationPurpose('${doc.id}', this.value)">
-                      <option value="">-- উদ্দেশ্য নির্বাচন করুন --</option>
-                      ${Object.entries(donationPurposes).map(([key, value]) => `<option value="${key}">${value}</option>`).join('')}
-                   </select>`;
+        try {
+            const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid), orderBy("date", "desc"));
+            const querySnapshot = await getDocs(q);
             
-            historyDiv.innerHTML += `<div class="data-item"><strong>পরিমাণ:</strong> ${donation.amount} টাকা | <strong>তারিখ:</strong> ${donation.date} | ${purposeHTML}</div>`;
-        });
+            if (querySnapshot.empty) {
+                historyDiv.innerHTML = '<p>আপনি এখনো কোনো অনুদান দেননি।</p>'; return;
+            }
+            historyDiv.innerHTML = '';
+            querySnapshot.forEach(doc => {
+                const donation = doc.data();
+                let purposeHTML = donation.purposeKey 
+                    ? `<strong>উদ্দেশ্য:</strong> ${donationPurposes[donation.purposeKey]}`
+                    : `<select class="purpose-select" onchange="updateDonationPurpose('${doc.id}', this.value)">
+                          <option value="">-- উদ্দেশ্য নির্বাচন করুন --</option>
+                          ${Object.entries(donationPurposes).map(([key, value]) => `<option value="${key}">${value}</option>`).join('')}
+                       </select>`;
+                
+                historyDiv.innerHTML += `<div class="data-item"><strong>পরিমাণ:</strong> ${donation.amount} টাকা | <strong>তারিখ:</strong> ${donation.date} | ${purposeHTML}</div>`;
+            });
+        } catch(error) {
+            console.error("Error loading my donations:", error);
+            showError(historyDiv, "আপনার ডোনেশন ইতিহাস লোড করা সম্ভব হয়নি।");
+        }
     }
 
     window.updateDonationPurpose = async function(donationId, purposeKey) {
@@ -528,38 +564,56 @@
         if (currentUser.isAnonymous) {
             alert("এই কাজটি করার জন্য আপনাকে লগইন করতে হবে।"); return;
         }
-        await updateDoc(doc(db, "donations", donationId), { purposeKey: purposeKey });
-        alert("উদ্দেশ্য সফলভাবে আপডেট করা হয়েছে!");
-        loadMyDonations();
-        loadFinanceData();
+        try {
+            await updateDoc(doc(db, "donations", donationId), { purposeKey: purposeKey });
+            alert("উদ্দেশ্য সফলভাবে আপডেট করা হয়েছে!");
+            loadMyDonations();
+            loadFinanceData();
+        } catch(error) {
+            alert("আপডেট করতে সমস্যা হয়েছে: " + error.message);
+        }
     }
 
     async function loadBloodDonors() {
         const bloodList = document.getElementById('bloodList');
-        const querySnapshot = await getDocs(collection(db, "members"));
-        bloodList.innerHTML = '';
-        querySnapshot.forEach((doc) => {
-            const donor = doc.data();
-            if(donor.blood) {
-                const { nextDate, isReady } = calculateNextDonationDate(donor.lastDonationDate);
-                const statusHTML = isReady ? `<span class="donor-status ready">প্রস্তুত</span>` : '';
-                bloodList.innerHTML += `
-                    <div class="donor-card">
-                        <div class="donor-header">
-                           <div class="donor-header-info">
-                             <span class="blood-group">${donor.blood}</span>
-                             <h4>${donor.name}</h4>
-                           </div>
-                           ${statusHTML}
-                        </div>
-                        <div class="donor-details">
-                            <p><i class="fas fa-phone"></i> ${donor.phone}</p>
-                            <p><i class="fas fa-map-marker-alt"></i> ${donor.location}</p>
-                            <p><i class="fas fa-calendar-check"></i> পরবর্তী সম্ভাব্য রক্তদান: <strong>${nextDate}</strong></p>
-                        </div>
-                    </div>`;
+        try {
+            const querySnapshot = await getDocs(collection(db, "members"));
+            if (querySnapshot.empty) {
+                bloodList.innerHTML = '<p>কোনো রক্তদাতা খুঁজে পাওয়া যায়নি।</p>'; return;
             }
-        });
+
+            bloodList.innerHTML = '';
+            let hasDonors = false;
+            querySnapshot.forEach((doc) => {
+                const donor = doc.data();
+                if(donor.blood) {
+                    hasDonors = true;
+                    const { nextDate, isReady } = calculateNextDonationDate(donor.lastDonationDate);
+                    const statusHTML = isReady ? `<span class="donor-status ready">প্রস্তুত</span>` : '';
+                    bloodList.innerHTML += `
+                        <div class="donor-card">
+                            <div class="donor-header">
+                               <div class="donor-header-info">
+                                 <span class="blood-group">${donor.blood}</span>
+                                 <h4>${donor.name}</h4>
+                               </div>
+                               ${statusHTML}
+                            </div>
+                            <div class="donor-details">
+                                <p><i class="fas fa-phone"></i> ${donor.phone || 'N/A'}</p>
+                                <p><i class="fas fa-map-marker-alt"></i> ${donor.location || 'N/A'}</p>
+                                <p><i class="fas fa-calendar-check"></i> পরবর্তী সম্ভাব্য রক্তদান: <strong>${nextDate}</strong></p>
+                            </div>
+                        </div>`;
+                }
+            });
+            if (!hasDonors) {
+                 bloodList.innerHTML = '<p>কোনো রক্তদাতা খুঁজে পাওয়া যায়নি।</p>';
+            }
+        } catch(error) {
+             console.error("Error loading blood donors:", error);
+             showError(bloodList, "রক্তদাতার তালিকা লোড করা সম্ভব হয়নি।");
+        }
     }
 
     function calculateNextDonationDate(lastDateStr) {
@@ -577,7 +631,7 @@
     function loadProfileForEditing(data) {
         document.getElementById('profileImg').src = data.img || 'https://via.placeholder.com/120';
         document.getElementById('profileName').value = data.name || '';
-        document.getElementById('profilePhone').value = data.phone.startsWith('+880') ? data.phone.substring(4) : data.phone;
+        document.getElementById('profilePhone').value = data.phone && data.phone.startsWith('+880') ? data.phone.substring(4) : data.phone || '';
         document.getElementById('profileBlood').value = data.blood || '';
         document.getElementById('profileIncome').value = data.income || '';
         document.getElementById('profileLocation').value = data.location || '';
@@ -598,6 +652,7 @@
         e.preventDefault();
         
         const dob = document.getElementById('profileDob').value;
+        if (!dob) { alert("অনুগ্রহ করে জন্ম তারিখ দিন।"); return; }
         const age = new Date(Date.now() - new Date(dob).getTime()).getUTCFullYear() - 1970;
         if (age < 10) { alert("সদস্য হওয়ার জন্য বয়স কমপক্ষে ১০ বছর হতে হবে।"); return; }
         
@@ -634,10 +689,14 @@
     document.getElementById('photoUpdateForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const statusP = document.getElementById('photoUploadStatus');
+        const photoFile = document.getElementById('newProfilePhoto').files[0];
+        if (!photoFile) {
+            alert("অনুগ্রহ করে একটি ছবি নির্বাচন করুন।"); return;
+        }
+        
         statusP.textContent = 'ছবি আপলোড হচ্ছে...';
         statusP.style.display = 'block';
-
-        const photoFile = document.getElementById('newProfilePhoto').files[0];
+        
         const formData = new FormData();
         formData.append('file', photoFile);
         formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
