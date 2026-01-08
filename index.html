@@ -6,35 +6,382 @@
     <title>লগইন - হিজলী দিঘাপাড়া যুব সংঘ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
-        :root { 
-            --primary-color: #16a085; 
-            --secondary-color: #2c3e50;
-            --light-gray: #f0f2f5; 
-            --dark-text: #2c3e50; 
-            --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
-        }
         @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
         
-        body {
-            font-family: 'Hind+Siliguri', sans-serif;
+        :root {
+            --primary-color: #16a085;
+            --secondary-color: #27ae60;
+            --dark-text: #2c3e50;
+            --light-text: #7f8c8d;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            background-color: var(--light-gray);
-            color: var(--dark-text);
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            text-align: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
             padding: 20px;
         }
 
-        .loader-container {
+        .login-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            width: 100%;
+            max-width: 420px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .header {
+            padding: 30px;
+            text-align: center;
+            color: var(--dark-text);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            color: var(--light-text);
+        }
+
+        .header .established {
+            display: inline-block;
+            background-color: #ecf0f1;
+            color: var(--dark-text);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: 500;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+
+        .form-control {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-control i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--light-text);
+        }
+
+        .form-control input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .btn-secondary {
+            background: none;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .alternative-login {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .alternative-login p {
+            color: var(--light-text);
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .alternative-login p::before, .alternative-login p::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 35%;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .alternative-login p::before { left: 0; }
+        .alternative-login p::after { right: 0; }
+
+        .btn-group {
             display: flex;
+            gap: 15px;
+        }
+        
+        .btn-alt {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-google {
+            background-color: #fff;
+            color: #db4437;
+            border: 1px solid #ddd;
+        }
+        .btn-google:hover { background-color: #f9f9f9; }
+        
+        .btn-guest {
+            background-color: #fff;
+            color: var(--dark-text);
+            border: 1px solid #ddd;
+        }
+        .btn-guest:hover { background-color: #f9f9f9; }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            color: var(--light-text);
+            font-size: 0.9rem;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 500;
+            display: none;
+        }
+        
+        #loader { display: none; margin-bottom: 15px; }
+        .loader-spinner {
+             border: 4px solid rgba(0,0,0,0.1);
+             border-left-color: white;
+             border-radius: 50%;
+             width: 20px;
+             height: 20px;
+             animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <header class="header">
+            <h1>হিজলী দিঘাপাড়া যুব সংঘ</h1>
+            <p>হিজলী দিঘাপাড়া, বাগাতিপাড়া, নাটোর</p>
+            <div class="established">স্থাপিত: ২০২৬</div>
+        </header>
+
+        <main class="main-content">
+            <form id="login-form">
+                <div class="form-control">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="email" placeholder="ইমেইল দিন" required>
+                </div>
+                <div class="form-control">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="পাসওয়ার্ড দিন" required>
+                </div>
+                
+                <div id="loader">
+                    <div class="loader-spinner"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">লগইন করুন</button>
+            </form>
+            
+            <button class="btn btn-secondary" id="signup-btn">অ্যাকাউন্ট তৈরি করুন</button>
+            
+            <p class="error-message" id="error-message"></p>
+
+            <div class="alternative-login">
+                <p>অথবা</p>
+                <div class="btn-group">
+                    <div class="btn-alt btn-google" id="google-login-btn">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </div>
+                    <div class="btn-alt btn-guest" id="guest-login-btn">
+                        <i class="fas fa-user-secret"></i>
+                        <span>Guest</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer class="footer">
+            সর্বস্বত্ব সংরক্ষিত © ২০২৬ হিজলী দিঘাপাড়া যুব সংঘ
+        </footer>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc", authDomain: "songho-8ef5c.firebaseapp.com", projectId: "songho-8ef5c", storageBucket: "songho-8ef5c.appspot.com", messagingSenderId: "489031747232", appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5", measurementId: "G-5NY15E3XJJ"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // --- DOM Elements ---
+        const loginForm = document.getElementById('login-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signupBtn = document.getElementById('signup-btn');
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        const guestLoginBtn = document.getElementById('guest-login-btn');
+        const errorMessage = document.getElementById('error-message');
+        const loader = document.getElementById('loader');
+
+        // --- Auth State Observer ---
+        onAuthStateChanged(auth, user => {
+            if (user) window.location.replace('user.html');
+        });
+
+        // --- Event Listeners ---
+        loginForm.addEventListener('submit', handleEmailLogin);
+        signupBtn.addEventListener('click', handleEmailSignup);
+        googleLoginBtn.addEventListener('click', handleGoogleLogin);
+        guestLoginBtn.addEventListener('click', handleGuestLogin);
+
+        // --- Functions ---
+        async function handleEmailLogin(e) {
+            e.preventDefault();
+            toggleLoader(true);
+            try {
+                await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+                // onAuthStateChanged will handle redirection
+            } catch (error) {
+                showError("ইমেইল বা পাসওয়ার্ড সঠিক নয়।");
+                console.error("Login Error:", error.code, error.message);
+                toggleLoader(false);
+            }
+        }
+
+        async function handleEmailSignup() {
+            toggleLoader(true);
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+                // New user created, redirect to complete profile
+                window.location.href = 'complete-profile.html';
+            } catch (error) {
+                if (error.code === 'auth/email-already-in-use') {
+                    showError("এই ইমেইল দিয়ে ইতিমধ্যে অ্যাকাউন্ট তৈরি করা আছে।");
+                } else if (error.code === 'auth/weak-password') {
+                    showError("পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
+                } else {
+                    showError("অ্যাকাউন্ট তৈরি করা সম্ভব হয়নি।");
+                }
+                console.error("Signup Error:", error.code, error.message);
+                toggleLoader(false);
+            }
+        }
+
+        async function handleGoogleLogin() {
+            toggleLoader(true);
+            try {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                const userDocRef = doc(db, "members", user.uid);
+                const docSnap = await getDoc(userDocRef);
+
+                if (docSnap.exists()) {
+                    window.location.href = 'user.html'; // Existing user
+                } else {
+                    window.location.href = 'complete-profile.html'; // New user
+                }
+            } catch (error) {
+                showError("Google দিয়ে লগইন করা সম্ভব হয়নি।");
+                console.error("Google Login Error:", error.code, error.message);
+                toggleLoader(false);
+            }
+        }
+
+        async function handleGuestLogin() {
+            toggleLoader(true);
+            try {
+                await signInAnonymously(auth);
+                // onAuthStateChanged will handle redirection
+            } catch (error) {
+                showError("Guest হিসেবে প্রবেশ করা সম্ভব হয়নি।");
+                console.error("Guest Login Error:", error.code, error.message);
+                toggleLoader(false);
+            }
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function toggleLoader(show) {
+            loader.style.display = show ? 'flex' : 'none';
+            errorMessage.style.display = 'none'; // Hide error when loader is shown
+        }
+        
+    </script>
+</body>
+</html>            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
