@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হিজলী দিঘাপাড়া যুব সংঘ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body { display: none; }
+        :root { --primary-color: #16a085; --secondary-color: #e74c3c; --light-gray: #f0f2f5; --dark-text: #2c3e50; --light-text: #666; --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); --success-color: #2ecc71; --info-color: #3498db; --error-color: #e74c3c; --pending-color: #f39c12; }
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background-color: var(--light-gray); color: var(--dark-text); padding-bottom: 80px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; }
+        header h1 { font-size: 1.6rem; margin: 0; }
+        header p { font-size: 0.9rem; margin: 5px 0 0; }
+        header .established { display: inline-block; background-color: white; color: var(--primary-color); padding: 5px 15px; border-radius: 15px; font-weight: bold; margin-top: 10px; font-size: 0.9rem; }
+        .page-content { padding: 15px; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background-color: white; padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 20px; }
+        h2 { font-size: 1.4rem; text-align: center; margin-bottom: 20px; }
+        h3 { font-size: 1.2rem; margin-top: 0; }
+        .search-bar, .filter-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
+        .filter-container { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .filter-container .search-bar { flex-grow: 1; margin-bottom: 0; }
+        .filter-container .filter-select { margin-bottom: 0; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; }
+        .feature-card-v2 { background-color: white; border-radius: 15px; box-shadow: var(--card-shadow); overflow: hidden; display: flex; flex-direction: column; text-align: center; cursor: pointer; }
+        .feature-card-v2-top { padding: 15px; color: white; }
+        .feature-card-v2-top i { font-size: 2rem; margin-bottom: 5px; }
+        .feature-card-v2-top h3 { margin: 0; font-size: 1rem; }
+        .feature-card-v2-bottom { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .feature-card-v2-bottom p { margin: 0 0 10px 0; font-size: 0.8rem; color: var(--light-text); }
+        .feature-card-v2-bottom button, .custom-button { border: none; padding: 8px 20px; border-radius: 20px; color: white; font-size: 0.9rem; cursor: pointer; align-self: center; background-color: var(--primary-color); }
+        .card-chada .feature-card-v2-top, .card-chada button { background-color: #00897b; }
+        .card-fee .feature-card-v2-top, .card-fee button { background-color: #689f38; }
+        .card-blood .feature-card-v2-top, .card-blood button { background-color: #d32f2f; }
+        .card-member .feature-card-v2-top, .card-member button { background-color: #6a1b9a; }
+        .card-send-donation .feature-card-v2-top, .card-send-donation button { background-color: var(--info-color); }
+        .member-list .member-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
+        .member-item img { width: 40px; height: 40px; border-radius: 50%; margin-right: 15px; object-fit: cover; }
+        .member-item .member-info { flex-grow: 1; }
+        .guest-badge { font-size: 0.7rem; padding: 2px 8px; background-color: var(--info-color); color: white; border-radius: 10px; margin-left: 8px; vertical-align: middle; }
+        #bloodList { display: grid; gap: 15px; }
+        .donor-card { background: #fff; border: 1px solid #eee; border-radius: 10px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .donor-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; margin-bottom: 10px; }
+        .donor-header-info { display: flex; align-items: center; }
+        .donor-header .blood-group { background-color: var(--secondary-color); color: white; font-weight: bold; font-size: 1.2rem; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
+        .donor-header h4 { margin: 0; font-size: 1.1rem; }
+        .donor-status { font-weight: bold; font-size: 0.9rem; padding: 4px 10px; border-radius: 12px; }
+        .donor-status.ready { color: white; background-color: var(--success-color); }
+        .donor-details p { margin: 8px 0; font-size: 0.9rem; color: var(--light-text); display: flex; align-items: center; }
+        .donor-details p i { color: var(--primary-color); width: 20px; text-align: center; margin-right: 8px; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: #fefefe; margin: 10% auto; padding: 20px; border-radius: 15px; width: 90%; max-width: 500px; text-align: center; position: relative; }
+        .close-btn { position: absolute; top: 10px; right: 15px; color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .modal-content img { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 15px; border: 3px solid var(--primary-color); object-fit: cover; }
+        .modal-content h3 { margin: 0 0 15px; }
+        .info-table { text-align: left; margin: 0 auto; }
+        .info-table td { padding: 5px; }
+        .info-table td:first-child { font-weight: bold; }
+        .modal form .form-group { margin-bottom: 15px; text-align: left; }
+        .modal form label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .modal form input, .modal form select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; box-sizing: border-box; }
+        .modal form button { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 1rem; color: white; background-color: var(--primary-color); }
+        .data-list .data-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-around; padding: 8px 0; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #95a5a6; font-size: 0.8rem; padding: 5px; cursor: pointer; flex-grow: 1; }
+        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary-color); }
+        .typewriter-text { overflow: hidden; border-right: .15em solid orange; white-space: nowrap; margin: 0 auto; letter-spacing: .1em; animation: typing 3.5s steps(30, end) infinite, blink-caret .75s step-end infinite; max-width: fit-content; }
+        @keyframes typing { from { width: 0 } to { width: 100% } 50% { width: 100% } 100% { width: 0 } }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: orange; } }
+        .donation-item { background: #fff; border: 1px solid #f0f0f0; border-radius: 8px; margin-bottom: 10px; }
+        .donation-header { display: flex; align-items: center; padding: 15px; cursor: pointer; }
+        .donation-header img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; margin-right: 15px; }
+        .donation-info h4 { margin: 0; }
+        .donation-info p { margin: 5px 0 0; color: #666; }
+        .donation-details-list { display: none; padding: 0 15px 15px; border-top: 1px solid #f0f0f0; }
+        .donation-details-list .detail-item { padding: 8px 0; border-bottom: 1px dashed #eee; }
+        .donation-details-list .detail-item:last-child { border-bottom: none; }
+        .finance-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .finance-table th, .finance-table td { padding: 12px; border: 1px solid #ddd; text-align: left; }
+        .finance-table thead th { background-color: var(--primary-color); color: white; }
+        .finance-table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        .finance-table tbody tr:hover { background-color: #f1f1f1; }
+        .finance-total td { font-weight: bold; background-color: #e0f2f1; color: var(--dark-text); }
+        .purpose-select { margin-left: 10px; padding: 5px; border-radius: 5px; }
+        #profile-image-container { position: relative; width: 120px; height: 120px; margin: 0 auto 20px; cursor: pointer; }
+        #profile-image-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); }
+        #profile-image-container .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); color: white; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        #profile-image-container:hover .overlay { opacity: 1; }
+        .notice-list .notice-item { padding: 10px; border-bottom: 1px solid #eee; }
+        .notice-item h4 { margin: 0 0 5px; }
+        .notice-item p { margin: 0; color: #666; }
+        .phone-input-group { display: flex; align-items: center; }
+        .phone-prefix { padding: 10px; background-color: #eee; border: 1px solid #ddd; border-right: none; border-radius: 5px 0 0 5px; }
+        .phone-input { border-radius: 0 5px 5px 0 !important; }
+        .proof-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee;}
+        .proof-item-info p { margin: 2px 0; }
+        .status-badge { padding: 4px 10px; border-radius: 12px; color: white; font-size: 0.8rem; }
+        .status-pending { background-color: var(--pending-color); }
+        .status-approved { background-color: var(--success-color); }
+        .status-rejected { background-color: var(--error-color); }
+        .error-message { color: var(--error-color); text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>হিজলী দিঘাপাড়া যুব সংঘ</h1>
+        <p>হিজলী দিঘাপাড়া , বাগাতিপাড়া , নাটোর</p>
+        <div class="established">স্থাপিত: ২০২৬</div>
+    </header>
+
+    <main id="page-content" class="page-content">
+        <p style="text-align:center; margin-top: 50px;">লোড হচ্ছে...</p>
+    </main>
+
+    <!-- Modals -->
+    <div id="memberModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('memberModal')">&times;</span><img id="modalImg" src="" alt="সদস্যের ছবি"><h3 id="modalName"></h3><table class="info-table"><tr><td>জন্ম তারিখ:</td><td id="modalDob"></td></tr><tr><td>বর্তমান বয়স:</td><td id="modalAge"></td></tr><tr><td>মোবাইল নম্বর:</td><td id="modalPhone"></td></tr><tr><td>রক্তের গ্রুপ:</td><td id="modalBlood"></td></tr><tr><td>পেশা:</td><td id="modalIncome"></td></tr><tr><td>বর্তমান অবস্থান:</td><td id="modalLocation"></td></tr></table></div></div>
+    <div id="photoUpdateModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('photoUpdateModal')">&times;</span><h2>ছবি আপডেট করুন</h2><form id="photoUpdateForm"><div class="form-group"><label for="newProfilePhoto">নতুন ছবি নির্বাচন করুন:</label><input type="file" id="newProfilePhoto" accept="image/*" required></div><button type="submit">আপলোড করুন</button><p id="photoUploadStatus" style="display:none; color:#16a085;"></p></form></div></div>
+    <div id="donationInfoModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('donationInfoModal')">&times;</span><h2>অনুদান পাঠান</h2><p>আপনার অনুদান আমাদের কার্যক্রমকে গতিশীল করতে সাহায্য করবে।</p><table class="info-table"><tr><td><strong>বিকাশ (পার্সোনাল):</strong></td><td>01611173634</td></tr><tr><td><strong>নগদ (পার্সোনাল):</strong></td><td>01611173634</td></tr></table><p style="color: var(--secondary-color); margin-top: 15px;">অনুদান পাঠানোর পর আপনার পেমেন্ট যাচাই করে সিস্টেমে আপডেট করা হবে।</p><button class="custom-button" style="margin-top: 20px; background-color: var(--info-color);" onclick="openModal('proofSubmissionModal'); closeModal('donationInfoModal');">অনুদান প্রমাণ জমা দিন</button></div></div>
+    <div id="proofSubmissionModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('proofSubmissionModal')">&times;</span><h2>অনুদান প্রমাণ জমা দিন</h2><form id="proofSubmissionForm"><div class="form-group"><label for="proofAmount">টাকার পরিমাণ:</label><input type="number" id="proofAmount" required></div><div class="form-group"><label for="proofMethod">মাধ্যম:</label><select id="proofMethod" required><option value="">-- নির্বাচন করুন --</option><option value="Bkash">বিকাশ</option><option value="Nagad">নগদ</option></select></div><div class="form-group"><label for="proofPurpose">উদ্দেশ্য:</label><select id="proofPurpose" required></select></div><div class="form-group"><label for="proofTrxId">ট্রানজেকশন আইডি (ঐচ্ছিক):</label><input type="text" id="proofTrxId"></div><div class="form-group"><label for="proofPhoto">পেমেন্টের স্ক্রিনশট:</label><input type="file" id="proofPhoto" accept="image/*" required></div><button type="submit">জমা দিন</button><p id="proofUploadStatus" style="display:none;"></p></form></div></div>
+    
+    <nav class="bottom-nav">
+        <div class="nav-item active" data-page="home"><i class="fas fa-home"></i><span>হোম</span></div>
+        <div class="nav-item" data-page="members"><i class="fas fa-users"></i><span>সদস্য</span></div>
+        <div class="nav-item" data-page="donations"><i class="fas fa-hand-holding-heart"></i><span>ডোনেশন</span></div>
+        <div class="nav-item" data-page="finance"><i class="fas fa-calculator"></i><span>হিসাব</span></div>
+        <div class="nav-item" data-page="blood"><i class="fas fa-heart"></i><span>রক্ত</span></div>
+        <div class="nav-item" data-page="profile" id="profileNavButton"><i class="fas fa-user-circle"></i><span>প্রোফাইল</span></div>
+        <div class="nav-item" id="logoutBtn"><i class="fas fa-sign-out-alt"></i><span>লগআউট</span></div>
+    </nav>
+    
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
