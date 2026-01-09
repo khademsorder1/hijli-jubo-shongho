@@ -1,28 +1,84 @@
 <div id="profile-section">
-    <h2><i class="fas fa-user-edit"></i> আমার প্রোফাইল</h2>
-    <div class="card">
-        <div id="profile-image-container" onclick="openModal('photoUpdateModal')">
-            <img id="profileImg" src="https://via.placeholder.com/120" alt="প্রোফাইল ছবি">
-            <div class="overlay"><i class="fas fa-camera"></i>&nbsp;<span>ছবি পরিবর্তন</span></div>
+    <h2><i class="fas fa-user-cog"></i> আমার ড্যাশবোর্ড</h2>
+    
+    <div class="profile-dashboard-grid">
+        <div class="dashboard-card" id="viewProfileBtn">
+            <i class="fas fa-id-card"></i>
+            <h3>প্রোফাইল দেখুন</h3>
         </div>
-        <form id="profileEditForm">
-            <div class="form-group"><label for="profileName">নাম:</label><input type="text" id="profileName" required></div>
-            <div class="form-group"><label for="profilePhone">মোবাইল:</label><div class="phone-input-group"><span class="phone-prefix">+880</span><input type="tel" id="profilePhone" class="phone-input" placeholder="1xxxxxxxxx"></div></div>
-            <div class="form-group"><label for="profileBlood">রক্তের গ্রুপ:</label><select id="profileBlood"><option value="">-- নির্বাচন করুন --</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select></div>
-            <div class="form-group"><label for="profileDob">জন্ম তারিখ:</label><input type="date" id="profileDob"></div>
-            <div class="form-group"><label for="profileIncome">পেশা:</label><input type="text" id="profileIncome"></div>
-            <div class="form-group"><label for="profileLocation">অবস্থান:</label><input type="text" id="profileLocation"></div>
-            <div class="form-group"><label for="lastDonationDate">শেষ রক্তদানের তারিখ:</label><input type="date" id="lastDonationDate"></div>
-            <button type="submit">সংরক্ষণ করুন</button>
-            <p id="editUploadStatus" style="display:none; color:#16a085; text-align:center; margin-top:10px;"></p>
-        </form>
+        <div class="dashboard-card" id="editProfileBtn">
+            <i class="fas fa-user-edit"></i>
+            <h3>প্রোফাইল এডিট</h3>
+        </div>
+        <div class="dashboard-card" id="paymentStatusBtn">
+            <i class="fas fa-receipt"></i>
+            <h3>পেমেন্ট স্ট্যাটাস</h3>
+        </div>
+        <div class="dashboard-card" id="generateCardBtn">
+            <i class="fas fa-address-card"></i>
+            <h3>মেম্বার কার্ড</h3>
+        </div>
     </div>
-    <div class="card">
-        <h3><i class="fas fa-history"></i> আমার ডোনেশন হিস্ট্রি</h3>
-        <div id="myDonationHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+
+    <!-- View Profile Modal -->
+    <div id="viewProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('viewProfileModal')">&times;</span>
+            <img id="modalProfileImg" src="" alt="প্রোফাইল ছবি">
+            <h3 id="modalProfileName"></h3>
+            <table class="info-table" id="modalProfileInfo"></table>
+        </div>
     </div>
-    <div class="card">
-        <h3><i class="fas fa-receipt"></i> আমার জমা দেওয়া প্রমাণ</h3>
-        <div id="myProofHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('editProfileModal')">&times;</span>
+            <h2>প্রোফাইল এডিট করুন</h2>
+            <form id="profileEditForm">
+                <div class="form-group"><label for="profileName">নাম:</label><input type="text" id="profileName" required></div>
+                <div class="form-group"><label for="profilePhone">মোবাইল:</label><div class="phone-input-group"><span class="phone-prefix">+880</span><input type="tel" id="profilePhone" class="phone-input" placeholder="1xxxxxxxxx"></div></div>
+                <div class="form-group"><label for="profileBlood">রক্তের গ্রুপ:</label><select id="profileBlood"><option value="">-- নির্বাচন করুন --</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select></div>
+                <div class="form-group"><label for="profileDob">জন্ম তারিখ:</label><input type="date" id="profileDob"></div>
+                <div class="form-group"><label for="profileLocation">অবস্থান:</label><input type="text" id="profileLocation"></div>
+                <div class="form-group"><label for="emergencyContact">জরুরী যোগাযোগ (ঐচ্ছিক):</label><input type="tel" id="emergencyContact" placeholder="নাম্বার"></div>
+                <hr>
+                <div class="form-group"><label for="willingToDonate">আপনি কি রক্তদানে ইচ্ছুক?</label><select id="willingToDonate"><option value="yes">হ্যাঁ</option><option value="no">না</option></select></div>
+                <div class="form-group"><label for="healthIssues">কোনো উল্লেখযোগ্য স্বাস্থ্যগত সমস্যা আছে কি? (ঐচ্ছিক)</label><input type="text" id="healthIssues" placeholder="যেমন: অ্যাজমা, হৃদরোগ ইত্যাদি"></div>
+                <button type="submit">আপডেট করুন</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Payment Status Modal -->
+    <div id="paymentStatusModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('paymentStatusModal')">&times;</span>
+            <h2>পেমেন্ট স্ট্যাটাস</h2>
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="pending">পেন্ডিং</button>
+                <button class="tab-button" data-tab="history">হিস্ট্রি</button>
+            </div>
+            <div id="pending" class="tab-content active">
+                <div id="myProofHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+            </div>
+            <div id="history" class="tab-content">
+                <div id="myDonationHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Card Modal -->
+    <div id="id-card-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('id-card-modal')">&times;</span>
+            <div id="id-card-container">
+                <!-- ID Card will be rendered here by JavaScript -->
+            </div>
+            <div class="id-card-actions">
+                <button id="downloadPngBtn" class="custom-button"><i class="fas fa-download"></i> PNG</button>
+                <button id="downloadPdfBtn" class="custom-button"><i class="fas fa-file-pdf"></i> PDF</button>
+            </div>
+        </div>
     </div>
 </div>
