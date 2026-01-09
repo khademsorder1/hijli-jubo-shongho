@@ -1,0 +1,28 @@
+<div id="profile-section">
+    <h2><i class="fas fa-user-edit"></i> আমার প্রোফাইল</h2>
+    <div class="card">
+        <div id="profile-image-container" onclick="openModal('photoUpdateModal')">
+            <img id="profileImg" src="https://via.placeholder.com/120" alt="প্রোফাইল ছবি">
+            <div class="overlay"><i class="fas fa-camera"></i>&nbsp;<span>ছবি পরিবর্তন</span></div>
+        </div>
+        <form id="profileEditForm">
+            <div class="form-group"><label for="profileName">নাম:</label><input type="text" id="profileName" required></div>
+            <div class="form-group"><label for="profilePhone">মোবাইল:</label><div class="phone-input-group"><span class="phone-prefix">+880</span><input type="tel" id="profilePhone" class="phone-input" placeholder="1xxxxxxxxx"></div></div>
+            <div class="form-group"><label for="profileBlood">রক্তের গ্রুপ:</label><select id="profileBlood"><option value="">-- নির্বাচন করুন --</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select></div>
+            <div class="form-group"><label for="profileDob">জন্ম তারিখ:</label><input type="date" id="profileDob"></div>
+            <div class="form-group"><label for="profileIncome">পেশা:</label><input type="text" id="profileIncome"></div>
+            <div class="form-group"><label for="profileLocation">অবস্থান:</label><input type="text" id="profileLocation"></div>
+            <div class="form-group"><label for="lastDonationDate">শেষ রক্তদানের তারিখ:</label><input type="date" id="lastDonationDate"></div>
+            <button type="submit">সংরক্ষণ করুন</button>
+            <p id="editUploadStatus" style="display:none; color:#16a085; text-align:center; margin-top:10px;"></p>
+        </form>
+    </div>
+    <div class="card">
+        <h3><i class="fas fa-history"></i> আমার ডোনেশন হিস্ট্রি</h3>
+        <div id="myDonationHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+    </div>
+    <div class="card">
+        <h3><i class="fas fa-receipt"></i> আমার জমা দেওয়া প্রমাণ</h3>
+        <div id="myProofHistory" class="data-list"><p>লোড হচ্ছে...</p></div>
+    </div>
+</div>
