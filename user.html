@@ -177,6 +177,82 @@
     min-width: 120px;
     margin-bottom: 0;
 }
+ /* --- New CSS for Profile Section Dashboard --- */
+.profile-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+}
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+.dashboard-card i {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+.dashboard-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: var(--dark-text);
+}
+
+/* --- New CSS for Payment Status Modal --- */
+.tab-buttons {
+    display: flex;
+    border-bottom: 2px solid #eee;
+    margin-bottom: 15px;
+}
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--light-text);
+    position: relative;
+}
+.tab-button.active {
+    color: var(--primary-color);
+}
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.5s; }
+
+/* --- New CSS for Member ID Card --- */
+#id-card-modal .modal-content { max-width: 400px; padding: 0; overflow: hidden; }
+#id-card-container { margin: 20px auto; }
+#id-card { width: 340px; height: 214px; border-radius: 14px; overflow: hidden; background: #fff; font-family: "Segoe UI", sans-serif; box-shadow: 0 8px 24px rgba(0,0,0,0.15); margin: 0 auto; }
+.id-header { background: linear-gradient(135deg, #0f9d8c, #16a34a); color: #fff; text-align: center; padding: 10px; font-weight: 700; font-size: 14px; }
+.id-header small { display: block; font-size: 11px; opacity: 0.9; }
+.id-body { display: flex; gap: 10px; padding: 10px; }
+.photo { width: 70px; height: 70px; border-radius: 50%; border: 3px solid #16a34a; object-fit: cover; }
+.info h3 { margin: 0; font-size: 14px; color: #333; }
+.member-id { font-size: 12px; color: #16a34a; font-weight: 600; }
+.info p { margin: 2px 0; font-size: 11px; color: #555; }
+.emergency { background: #fee2e2; color: #dc2626; font-size: 11px; padding: 6px 10px; font-weight: 600; }
+.id-footer { text-align: center; font-size: 10px; padding: 4px; background: #f3f4f6; }
+.id-card-actions { padding: 15px; text-align: center; }
+.id-card-actions button { margin: 0 5px; }       
     </style>
 </head>
 <body>
