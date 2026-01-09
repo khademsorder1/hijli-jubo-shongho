@@ -102,6 +102,81 @@
         .status-approved { background-color: var(--success-color); }
         .status-rejected { background-color: var(--error-color); }
         .error-message { color: var(--error-color); text-align: center; }
+        /* --- New CSS for Members List --- */
+#memberList {
+    display: grid;
+    grid-template-columns: 1fr; /* মোবাইল ডিভাইসে একটি কলাম */
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* বড় স্ক্রিনের জন্য দুটি কলাম (ঐচ্ছিক) */
+@media (min-width: 600px) {
+    #memberList {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.member-card {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.member-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+.member-card img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+.member-card .member-info {
+    flex-grow: 1;
+}
+.member-card .member-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0;
+}
+.member-card .member-location {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    margin: 4px 0 0;
+}
+.member-card .guest-badge-v2 {
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    background-color: var(--info-color);
+    color: white;
+    border-radius: 12px;
+    margin-left: 10px;
+}
+/* Improved search/filter container */
+.search-filter-box {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.search-filter-box .search-bar {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+.search-filter-box .filter-select {
+    width: auto; /* ফিল্টারকে তার কন্টেন্টের সাইজ অনুযায়ী জায়গা নিতে দেয় */
+    min-width: 120px;
+    margin-bottom: 0;
+}
     </style>
 </head>
 <body>
