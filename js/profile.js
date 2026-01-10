@@ -1,47 +1,127 @@
-import { doc, getDoc, updateDoc, setDoc, collection, query, where, orderBy, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+import { doc, getDoc, setDoc, collection, query, where, orderBy, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+// CDN for html2canvas and jsPDF
+const HTML2CANVAS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const JSPDF_CDN = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 
-const CLOUDINARY_URL = 'https://api.cloudinary.com/v1_1/dy7sxczfo/image/upload';
-const CLOUDINARY_UPLOAD_PRESET = 'songho_preset';
 const defaultAvatar = 'https://i.ibb.co/6y4g08x/default-avatar.png';
-const donationPurposes = { "samajik": "সামাজিক উন্নয়ন", "khela": "খেলাধুলা", "mosjid": "মসজিদ উন্নয়ন", "madrasa": "মাদ্রাসা", "eid": "ঈদ উৎসব", "shikkha": "নামাজ/কুরআন শিক্ষা", "hafez": "হাফেজদের জন্য" };
+let userProfileData = null; // To store user data globally in this module
+let loadedScripts = {}; // To prevent reloading scripts
 
-function populatePurposeDropdowns() {
-    const purposeSelect = document.getElementById('proofPurpose');
-    if (!purposeSelect) return;
-    purposeSelect.innerHTML = `<option value="">-- উদ্দেশ্য নির্বাচন করুন --</option>`;
-    for (const [key, value] of Object.entries(donationPurposes)) {
-        purposeSelect.innerHTML += `<option value="${key}">${value}</option>`;
+// Function to dynamically load a script
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        if (loadedScripts[src]) {
+            resolve();
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = () => {
+            loadedScripts[src] = true;
+            resolve();
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+// --- View Profile Logic ---
+function populateViewProfileModal() {
+    if (!userProfileData) return;
+    document.getElementById('modalProfileImg').src = userProfileData.img || defaultAvatar;
+    document.getElementById('modalProfileName').innerText = userProfileData.name || 'নাম নেই';
+
+    const infoTable = document.getElementById('modalProfileInfo');
+    let tableHTML = '';
+    const memberId = window.formatMemberId(userProfileData.memberId || userProfileData.uid, userProfileData.isGuest);
+
+    tableHTML += `<tr><td>সদস্য আইডি:</td><td>${memberId}</td></tr>`;
+    if (userProfileData.dob) tableHTML += `<tr><td>জন্ম তারিখ:</td><td>${userProfileData.dob}</td></tr>`;
+    if (userProfileData.phone) tableHTML += `<tr><td>মোবাইল:</td><td>${userProfileData.phone}</td></tr>`;
+    if (userProfileData.blood) tableHTML += `<tr><td>রক্তের গ্রুপ:</td><td>${userProfileData.blood}</td></tr>`;
+    if (userProfileData.location) tableHTML += `<tr><td>অবস্থান:</td><td>${userProfileData.location}</td></tr>`;
+    if (userProfileData.emergencyContact) tableHTML += `<tr><td>জরুরী যোগাযোগ:</td><td>${userProfileData.emergencyContact}</td></tr>`;
+
+    infoTable.innerHTML = tableHTML;
+    openModal('viewProfileModal');
+}
+
+// --- Edit Profile Logic ---
+function populateEditProfileForm() {
+    if (!userProfileData) return;
+    document.getElementById('profileName').value = userProfileData.name || '';
+    document.getElementById('profilePhone').value = userProfileData.phone ? userProfileData.phone.replace('+880', '') : '';
+    document.getElementById('profileBlood').value = userProfileData.blood || '';
+    document.getElementById('profileLocation').value = userProfileData.location || '';
+    document.getElementById('emergencyContact').value = userProfileData.emergencyContact || '';
+    document.getElementById('willingToDonate').value = userProfileData.willingToDonate || 'yes';
+    document.getElementById('healthIssues').value = userProfileData.healthIssues || '';
+    if (userProfileData.dob) {
+        try {
+            const parts = userProfileData.dob.split('-'); // DD-MM-YYYY
+            document.getElementById('profileDob').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        } catch (e) { console.error("Error parsing DOB"); }
+    }
+    openModal('editProfileModal');
+}
+
+async function handleProfileUpdate(e, db, currentUser) {
+    e.preventDefault();
+    const name = document.getElementById('profileName').value;
+    if (!name) { alert("অনুগ্রহ করে আপনার নাম দিন।"); return; }
+    
+    const dobInput = document.getElementById('profileDob').value;
+    const formattedDob = dobInput ? `${dobInput.split('-')[2]}-${dobInput.split('-')[1]}-${dobInput.split('-')[0]}` : null;
+    const phoneInput = document.getElementById('profilePhone').value;
+
+    const updatedData = {
+        name,
+        phone: phoneInput ? `+880${phoneInput}` : null,
+        blood: document.getElementById('profileBlood').value,
+        dob: formattedDob,
+        location: document.getElementById('profileLocation').value,
+        emergencyContact: document.getElementById('emergencyContact').value,
+        willingToDonate: document.getElementById('willingToDonate').value,
+        healthIssues: document.getElementById('healthIssues').value,
+        isGuest: currentUser.isAnonymous, // Keep guest status
+    };
+
+    try {
+        await setDoc(doc(db, "members", currentUser.uid), updatedData, { merge: true });
+        alert("প্রোফাইল সফলভাবে আপডেট হয়েছে!");
+        closeModal('editProfileModal');
+        // Refresh local data and any open modals
+        const docSnap = await getDoc(doc(db, "members", currentUser.uid));
+        userProfileData = docSnap.data();
+    } catch (error) {
+        alert("আপডেট করতে সমস্যা হয়েছে: " + error.message);
     }
 }
 
-async function loadMyDonations(db, currentUser) {
-    const historyDiv = document.getElementById('myDonationHistory');
-    try {
-        const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
-        if (querySnapshot.empty) {
-            historyDiv.innerHTML = '<p>আপনি এখনো কোনো অনুদান দেননি।</p>';
-            return;
-        }
-        historyDiv.innerHTML = '';
-        querySnapshot.forEach(docSnap => {
-            const donation = docSnap.data();
-            let purposeHTML = `<strong>উদ্দেশ্য:</strong> ${donationPurposes[donation.purposeKey] || 'অনির্দিষ্ট'}`;
-            historyDiv.innerHTML += `<div class="data-item"><strong>পরিমাণ:</strong> ${donation.amount} টাকা | <strong>তারিখ:</strong> ${donation.date} | ${purposeHTML}</div>`;
+
+// --- Payment Status Logic ---
+function setupPaymentTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            tabContents.forEach(content => {
+                content.classList.toggle('active', content.id === button.dataset.tab);
+            });
         });
-    } catch (error) {
-        console.error("Error loading my donations:", error);
-        showError(historyDiv, "আপনার ডোনেশন ইতিহাস লোড করা সম্ভব হয়নি।");
-    }
+    });
 }
 
 async function loadMyProofs(db, currentUser) {
     const historyDiv = document.getElementById('myProofHistory');
-    try {
-        const q = query(collection(db, "donation_proofs"), where("userId", "==", currentUser.uid), orderBy("submittedAt", "desc"));
-        const querySnapshot = await getDocs(q);
+    historyDiv.innerHTML = '<p>লোড হচ্ছে...</p>';
+    const q = query(collection(db, "donation_proofs"), where("userId", "==", currentUser.uid), orderBy("submittedAt", "desc"));
+    
+    onSnapshot(q, (querySnapshot) => {
         if (querySnapshot.empty) {
-            historyDiv.innerHTML = '<p>আপনি এখনো কোনো প্রমাণ জমা দেননি।</p>';
+            historyDiv.innerHTML = '<p>আপনি কোনো পেমেন্টের প্রমাণ জমা দেননি।</p>';
             return;
         }
         historyDiv.innerHTML = '';
@@ -49,175 +129,119 @@ async function loadMyProofs(db, currentUser) {
             const proof = doc.data();
             const statusText = { pending: 'পেন্ডিং', approved: 'অনুমোদিত', rejected: 'প্রত্যাখ্যাত' };
             const statusClass = { pending: 'status-pending', approved: 'status-approved', rejected: 'status-rejected' };
-            historyDiv.innerHTML += `
-                <div class="proof-item">
-                    <div class="proof-item-info">
-                        <p><strong>পরিমাণ:</strong> ${proof.amount} টাকা | <strong>মাধ্যম:</strong> ${proof.method}</p>
-                        <p><strong>উদ্দেশ্য:</strong> ${donationPurposes[proof.purposeKey] || 'N/A'}</p>
-                    </div>
-                    <span class="status-badge ${statusClass[proof.status] || ''}">${statusText[proof.status] || 'Unknown'}</span>
-                </div>`;
+            historyDiv.innerHTML += `<div class="proof-item">
+                <div class="proof-item-info">
+                    <p><strong>পরিমাণ:</strong> ${proof.amount} টাকা</p>
+                    <p><strong>তারিখ:</strong> ${new Date(proof.submittedAt.seconds * 1000).toLocaleDateString('bn-BD')}</p>
+                </div>
+                <span class="status-badge ${statusClass[proof.status]}">${statusText[proof.status]}</span>
+            </div>`;
         });
-    } catch(error) {
-        console.error("Error loading my proofs:", error);
-        showError(historyDiv, "আপনার প্রমাণ তালিকা লোড করা সম্ভব হয়নি।");
-    }
+    }, (error) => {
+        console.error(error);
+        showError(historyDiv, "প্রমাণ তালিকা লোড করা সম্ভব হয়নি।");
+    });
 }
 
-
-function loadProfileForEditing(data) {
-    document.getElementById('profileImg').src = data.img || defaultAvatar;
-    document.getElementById('profileName').value = data.name || '';
-    document.getElementById('profilePhone').value = data.phone ? data.phone.replace('+880', '') : '';
-    document.getElementById('profileBlood').value = data.blood || '';
-    document.getElementById('profileIncome').value = data.income || '';
-    document.getElementById('profileLocation').value = data.location || '';
-    document.getElementById('lastDonationDate').value = data.lastDonationDate || '';
-    if (data.dob) {
-        try {
-            const parts = data.dob.split('-'); // DD-MM-YYYY
-            document.getElementById('profileDob').value = `${parts[2]}-${parts[1]}-${parts[0]}`;
-        } catch (e) { console.error("Error parsing DOB", data.dob); }
-    }
-}
-
-async function handleProfileSubmit(e, db, currentUser) {
-    e.preventDefault();
-    const name = document.getElementById('profileName').value;
-    if (!name) { alert("অনুগ্রহ করে আপনার নাম দিন।"); return; }
+async function loadMyDonations(db, currentUser) {
+    const historyDiv = document.getElementById('myDonationHistory');
+    historyDiv.innerHTML = '<p>লোড হচ্ছে...</p>';
+    const q = query(collection(db, "donations"), where("userId", "==", currentUser.uid), orderBy("date", "desc"));
     
-    const uploadStatus = document.getElementById('editUploadStatus');
-    uploadStatus.textContent = 'তথ্য সংরক্ষণ করা হচ্ছে...';
-    uploadStatus.style.display = 'block';
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+        historyDiv.innerHTML = '<p>আপনার কোনো অনুমোদিত পেমেন্ট নেই।</p>';
+        return;
+    }
+    historyDiv.innerHTML = '';
+    querySnapshot.forEach(doc => {
+        const donation = doc.data();
+        historyDiv.innerHTML += `<div class="data-item">
+            <strong>পরিমাণ:</strong> ${donation.amount} টাকা | <strong>তারিখ:</strong> ${donation.date}
+        </div>`;
+    });
+}
 
-    const dobInput = document.getElementById('profileDob').value;
-    const dobParts = dobInput ? dobInput.split('-') : null;
-    const formattedDob = dobParts ? `${dobParts[2]}-${dobParts[1]}-${dobParts[0]}` : null;
+// --- Member Card Logic ---
+function renderMemberCard() {
+    const container = document.getElementById('id-card-container');
+    if (!userProfileData) {
+        container.innerHTML = '<p>কার্ড তৈরির জন্য তথ্য পাওয়া যায়নি।</p>';
+        return;
+    }
+    const memberId = window.formatMemberId(userProfileData.memberId || userProfileData.uid, userProfileData.isGuest);
+    
+    container.innerHTML = `
+        <div id="id-card">
+            <div class="id-header">হিজলী দিঘাপাড়া যুব সংঘ<small>Bagatipara, Natore</small></div>
+            <div class="id-body">
+                <img class="photo" src="${userProfileData.img || defaultAvatar}" crossorigin="anonymous">
+                <div class="info">
+                    <h3>${userProfileData.name || 'N/A'}</h3>
+                    <p class="member-id">ID: ${memberId}</p>
+                    <p><b>Blood:</b> ${userProfileData.blood || 'N/A'}</p>
+                    <p><b>Phone:</b> ${userProfileData.phone || 'N/A'}</p>
+                </div>
+            </div>
+            <div class="emergency">🚨 জরুরী যোগাযোগ: ${userProfileData.emergencyContact || 'N/A'}</div>
+            <div class="id-footer">Valid Member • Since 2026</div>
+        </div>`;
+    openModal('id-card-modal');
+}
 
-    const phoneInput = document.getElementById('profilePhone').value;
-    const formattedPhone = phoneInput ? `+880${phoneInput}` : null;
-
-    const profileData = {
-        name: name,
-        phone: formattedPhone,
-        blood: document.getElementById('profileBlood').value,
-        dob: formattedDob,
-        income: document.getElementById('profileIncome').value,
-        location: document.getElementById('profileLocation').value,
-        lastDonationDate: document.getElementById('lastDonationDate').value,
-        isGuest: currentUser.isAnonymous,
-    };
+async function downloadCard(format) {
+    await Promise.all([loadScript(HTML2CANVAS_CDN), loadScript(JSPDF_CDN)]);
+    const cardElement = document.getElementById('id-card');
+    const button = format === 'png' ? document.getElementById('downloadPngBtn') : document.getElementById('downloadPdfBtn');
+    button.disabled = true;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Downloading...';
 
     try {
-        await setDoc(doc(db, "members", currentUser.uid), profileData, { merge: true });
-        alert("প্রোফাইল সফলভাবে সংরক্ষিত হয়েছে!");
-        location.reload();
+        const canvas = await html2canvas(cardElement, { useCORS: true, scale: 3 });
+        if (format === 'png') {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `${userProfileData.name}_ID_Card.png`;
+            link.click();
+        } else if (format === 'pdf') {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [340, 214] });
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 340, 214);
+            pdf.save(`${userProfileData.name}_ID_Card.pdf`);
+        }
     } catch (error) {
-        alert("সংরক্ষণ করতে সমস্যা হয়েছে: " + error.message);
-        uploadStatus.style.display = 'none';
+        console.error("Download Error:", error);
+        alert("কার্ড ডাউনলোড করতে সমস্যা হয়েছে।");
+    } finally {
+        button.disabled = false;
+        button.innerHTML = `<i class="fas fa-${format === 'png' ? 'download' : 'file-pdf'}"></i> ${format.toUpperCase()}`;
     }
 }
 
-async function handlePhotoUpdate(e, db, currentUser) {
-    e.preventDefault();
-    const statusP = document.getElementById('photoUploadStatus');
-    const photoFile = document.getElementById('newProfilePhoto').files[0];
-    if (!photoFile) { alert("অনুগ্রহ করে একটি ছবি নির্বাচন করুন।"); return; }
-
-    statusP.textContent = 'ছবি আপলোড হচ্ছে...';
-    statusP.style.display = 'block';
-    const formData = new FormData();
-    formData.append('file', photoFile);
-    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-    try {
-        const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-        if (!response.ok) throw new Error('Image upload failed');
-        const data = await response.json();
-        
-        await setDoc(doc(db, "members", currentUser.uid), { img: data.secure_url }, { merge: true });
-        alert("ছবি সফলভাবে আপডেট হয়েছে!");
-        location.reload();
-    } catch (error) {
-        alert("ছবি আপলোড করতে সমস্যা হয়েছে: " + error.message);
-        statusP.style.display = 'none';
-    }
-}
-
-
-async function attachEventListeners(db, currentUser) {
-    document.getElementById('profileEditForm').addEventListener('submit', (e) => handleProfileSubmit(e, db, currentUser));
-    
-    const photoUpdateForm = document.getElementById('photoUpdateForm');
-    if (photoUpdateForm) {
-         photoUpdateForm.addEventListener('submit', (e) => handlePhotoUpdate(e, db, currentUser));
-    }
-   
-    const proofForm = document.getElementById('proofSubmissionForm');
-    if (proofForm) {
-        populatePurposeDropdowns();
-        proofForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const statusP = document.getElementById('proofUploadStatus');
-            statusP.textContent = 'আপনার প্রমাণ জমা দেওয়া হচ্ছে...';
-            statusP.style.display = 'block';
-
-            const photoFile = document.getElementById('proofPhoto').files[0];
-            if (!photoFile) { statusP.textContent = 'অনুগ্রহ করে একটি ছবি দিন।'; statusP.style.color = 'var(--error-color)'; return; }
-            
-            try {
-                const formData = new FormData();
-                formData.append('file', photoFile);
-                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-                const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
-                if (!response.ok) throw new Error('Image upload failed');
-                const imageData = await response.json();
-                
-                const userDoc = await getDoc(doc(db, "members", currentUser.uid));
-                const userName = userDoc.exists() ? userDoc.data().name : "Unknown User";
-
-                await addDoc(collection(db, "donation_proofs"), {
-                    userId: currentUser.uid, userName: userName,
-                    amount: document.getElementById('proofAmount').value,
-                    method: document.getElementById('proofMethod').value,
-                    purposeKey: document.getElementById('proofPurpose').value,
-                    trxId: document.getElementById('proofTrxId').value,
-                    imageUrl: imageData.secure_url, status: 'pending',
-                    submittedAt: serverTimestamp()
-                });
-                
-                statusP.textContent = 'আপনার প্রমাণ সফলভাবে জমা হয়েছে!';
-                statusP.style.color = 'var(--success-color)';
-                proofForm.reset();
-                loadMyProofs(db, currentUser);
-                setTimeout(() => closeModal('proofSubmissionModal'), 2000);
-            } catch (error) {
-                console.error("Proof submission error:", error);
-                statusP.textContent = "প্রমাণ জমা দিতে সমস্যা হয়েছে: " + error.message;
-                statusP.style.color = 'var(--error-color)';
-            }
-        });
-    }
-}
-
+// --- Main Init Function ---
 export async function init(db, currentUser) {
     const userDocRef = doc(db, "members", currentUser.uid);
     const docSnap = await getDoc(userDocRef);
 
     if (docSnap.exists()) {
-        loadProfileForEditing(docSnap.data());
+        userProfileData = docSnap.data();
     } else {
-        document.getElementById('profileImg').src = defaultAvatar;
+        userProfileData = {}; // Empty object for new guests
     }
 
-    if (currentUser.isAnonymous) {
-        document.querySelector('#myDonationHistory').parentElement.style.display = 'none';
-        document.querySelector('#myProofHistory').parentElement.style.display = 'none';
-    } else {
-        await Promise.all([
-            loadMyDonations(db, currentUser),
-            loadMyProofs(db, currentUser)
-        ]);
-    }
-    
-    attachEventListeners(db, currentUser);
+    // Attach event listeners to dashboard cards
+    document.getElementById('viewProfileBtn').addEventListener('click', populateViewProfileModal);
+    document.getElementById('editProfileBtn').addEventListener('click', populateEditProfileForm);
+    document.getElementById('paymentStatusBtn').addEventListener('click', () => {
+        openModal('paymentStatusModal');
+        setupPaymentTabs();
+        loadMyProofs(db, currentUser);
+        loadMyDonations(db, currentUser);
+    });
+    document.getElementById('generateCardBtn').addEventListener('click', renderMemberCard);
+
+    // Attach form submission and download listeners
+    document.getElementById('profileEditForm').addEventListener('submit', (e) => handleProfileUpdate(e, db, currentUser));
+    document.getElementById('downloadPngBtn').addEventListener('click', () => downloadCard('png'));
+    document.getElementById('downloadPdfBtn').addEventListener('click', () => downloadCard('pdf'));
 }
