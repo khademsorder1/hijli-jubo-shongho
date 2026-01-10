@@ -71,6 +71,13 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     signOut(auth).catch(error => console.error("Sign out error", error));
 });
 
+// --- New Global Function for ID Formatting ---
+window.formatMemberId = (memberId, isGuest) => {
+    const prefix = isGuest ? 'HDJG-' : 'HDJ-';
+    // Remove existing prefix if any, then pad with zeros
+    const numericId = String(memberId).replace(/HDJ-?G?-?/i, '');
+    return prefix + numericId.padStart(3, '0');
+};
 export async function loadPage(pageName) {
     navItems.forEach(nav => {
         nav.classList.toggle('active', nav.dataset.page === pageName);
