@@ -237,6 +237,11 @@
                 pageLoader.innerHTML = `<p style="color:red; font-weight:bold;">সিস্টেম চালু হতে সমস্যা হচ্ছে।</p>`;
             }
         });
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+
     </script>
 </body>
 </html>
