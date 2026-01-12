@@ -5,299 +5,804 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>অ্যাডমিন প্যানেল - হিজলী দিঘাপাড়া যুব সংঘ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css">
     <style>
-        :root { --primary-color: #2c3e50; --secondary-color: #16a085; --light-gray: #f0f2f5; --dark-text: #2c3e50; --card-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); --warning-color: #f39c12; }
-        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
-        * { box-sizing: border-box; }
-        body { font-family: 'Hind Siliguri', sans-serif; margin: 0; background-color: var(--light-gray); color: var(--dark-text); }
-        .header { display: flex; align-items: center; justify-content: space-between; background-color: var(--primary-color); color: white; padding: 15px 20px; position: sticky; top: 0; z-index: 1000;}
-        .header h1 { margin: 0; font-size: 1.2rem; }
-        .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; }
-        .container { display: flex; }
-        .sidebar { width: 220px; background-color: #34495e; color: white; min-height: calc(100vh - 60px); padding-top: 20px; transition: transform 0.3s ease-in-out; }
-        .sidebar a { display: flex; align-items: center; color: white; padding: 15px 20px; text-decoration: none; border-left: 4px solid transparent; }
-        .sidebar a:hover, .sidebar a.active { background-color: #4a627a; border-left-color: var(--secondary-color); }
-        .sidebar a i { margin-right: 15px; width: 20px; }
-        .main-content { flex-grow: 1; padding: 20px; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .card { background-color: white; padding: 20px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 20px; }
-        h2 { border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; margin-top: 0; }
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; min-width: 600px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-        .btn { padding: 6px 12px; border: none; border-radius: 5px; cursor: pointer; color: white; font-size: 0.9rem; margin: 2px; }
-        .btn-add { float: right; margin-bottom: 15px; }
-        .btn-primary { background-color: var(--secondary-color); }
-        .btn-success { background-color: #27ae60; }
-        .btn-info { background-color: #3498db; }
-        .btn-warning { background-color: #f39c12; }
-        .btn-danger { background-color: #e74c3c; }
-        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); overflow-y: auto; }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 25px; border-radius: 10px; width: 90%; max-width: 500px; position: relative; }
-        .close-btn { position: absolute; top: 10px; right: 20px; font-size: 28px; cursor: pointer; }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; text-align: center; }
-        .stat-box { background: #f9f9f9; padding: 20px; border-radius: 8px; border-left: 5px solid var(--secondary-color); }
-        .stat-box h4 { margin: 0 0 10px 0; font-size: 1rem; }
-        .stat-box p { font-size: 1.5rem; font-weight: bold; margin: 0; }
-        .stat-box.pending { border-left-color: var(--warning-color); }
-        .proof-img { max-width: 100%; border-radius: 5px; margin-top: 10px; cursor: pointer; }
-        #viewMemberModal .view-info { display: flex; align-items: center; text-align: left; }
-        #viewMemberModal .view-info img { width: 80px; height: 80px; border-radius: 50%; margin-right: 20px; }
-        #viewMemberModal table { margin-top: 15px; }
-        #viewMemberModal td { padding: 8px; }
-        #viewMemberModal td:first-child { font-weight: bold; }
-        @media (max-width: 768px) { .menu-toggle { display: block; } .sidebar { position: fixed; left: 0; top: 60px; height: 100%; transform: translateX(-100%); z-index: 999; } .sidebar.open { transform: translateX(0); box-shadow: 5px 0 15px rgba(0,0,0,0.1); } .header h1 { font-size: 1.1rem; } }
+        :root {
+            --primary: #16a085;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .admin-header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--card-shadow);
+            animation: fadeInDown 0.8s ease;
+        }
+        
+        .logo-section h1 {
+            color: var(--dark);
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        
+        .logo-section p {
+            color: #7f8c8d;
+        }
+        
+        .stats-badge {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .stat-content h3 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .stat-content p {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        /* Color themes for cards */
+        .income-card .stat-icon { background: var(--secondary); }
+        .expense-card .stat-icon { background: var(--danger); }
+        .balance-card .stat-icon { background: var(--info); }
+        .pending-card .stat-icon { background: var(--warning); }
+        .members-card .stat-icon { background: #9b59b6; }
+        .donors-card .stat-icon { background: #e74c3c; }
+        
+        /* Tabs Navigation */
+        .admin-tabs {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .tab-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: #f8f9fa;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 600;
+            color: #7f8c8d;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* Action Buttons */
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--secondary); color: white; }
+        .btn-warning { background: var(--warning); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-info { background: var(--info); color: white; }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideInUp 0.3s ease;
+        }
+        
+        .modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #7f8c8d;
+            cursor: pointer;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .tab-nav {
+                justify-content: center;
+            }
+            
+            .table-container {
+                margin: 0 -20px;
+                padding: 0 20px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-rejected { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
-    <header class="header"><h1>অ্যাডমিন প্যানেল</h1><button class="menu-toggle" id="menu-toggle"><i class="fas fa-bars"></i></button></header>
-    <div class="container">
-        <nav class="sidebar" id="sidebar">
-            <a class="nav-link active" onclick="showPage('dashboard')"><i class="fas fa-tachometer-alt"></i><span>ড্যাশবোর্ড</span></a>
-            <a class="nav-link" onclick="showPage('proofs')"><i class="fas fa-check-circle"></i><span>অনুদান প্রমাণ</span></a>
-            <a class="nav-link" onclick="showPage('members')"><i class="fas fa-users"></i><span>সদস্য পরিচালনা</span></a>
-            <a class="nav-link" onclick="showPage('donations')"><i class="fas fa-hand-holding-heart"></i><span>ডোনেশন</span></a>
-            <a class="nav-link" onclick="showPage('expenses')"><i class="fas fa-file-invoice-dollar"></i><span>ব্যয় পরিচালনা</span></a>
-            <a class="nav-link" onclick="showPage('notices')"><i class="fas fa-bullhorn"></i><span>নোটিশ পরিচালনা</span></a>
-            <a id="adminLogoutBtn" style="cursor:pointer;"><i class="fas fa-sign-out-alt"></i><span>লগআউট</span></a>
-        </nav>
-        <main class="main-content">
-            <div id="dashboard" class="page active">
-                <h2>ড্যাশবোর্ড</h2>
-                <div class="card">
-                    <div id="dashboardStats" class="dashboard-grid">
-                        <div class="stat-box"><h4 >মোট আয়</h4><p id="totalIncome">লোড হচ্ছে...</p></div>
-                        <div class="stat-box"><h4>মোট ব্যয়</h4><p id="totalExpense">লোড হচ্ছে...</p></div>
-                        <div class="stat-box"><h4>বর্তমান ব্যালেন্স</h4><p id="totalBalance">লোড হচ্ছে...</p></div>
-                        <div class="stat-box pending"><h4>পেন্ডিং প্রমাণ</h4><p id="pendingProofs">0</p></div>
-                    </div>
+    <div class="admin-container">
+        <!-- Header -->
+        <header class="admin-header animate__animated animate__fadeInDown">
+            <div class="logo-section">
+                <h1><i class="fas fa-user-shield"></i> অ্যাডমিন প্যানেল</h1>
+                <p>হিজলী দিঘাপাড়া যুব সংঘ - সম্পূর্ণ কন্ট্রোল</p>
+            </div>
+            <div class="stats-badge">
+                <i class="fas fa-sync-alt"></i> রিয়েল-টাইম আপডেট
+            </div>
+        </header>
+        
+        <!-- Dashboard Stats -->
+        <div class="dashboard-grid">
+            <div class="stat-card income-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s">
+                <div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-content">
+                    <h3 id="totalIncome">0</h3>
+                    <p>মোট আয়</p>
                 </div>
-                <div class="card">
-                    <h3>সর্বশেষ ডোনেশনসমূহ</h3>
+            </div>
+            
+            <div class="stat-card expense-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <div class="stat-icon"><i class="fas fa-file-invoice-dollar"></i></div>
+                <div class="stat-content">
+                    <h3 id="totalExpense">0</h3>
+                    <p>মোট ব্যয়</p>
+                </div>
+            </div>
+            
+            <div class="stat-card balance-card animate__animated animate__fadeInUp" style="animation-delay: 0.3s">
+                <div class="stat-icon"><i class="fas fa-balance-scale"></i></div>
+                <div class="stat-content">
+                    <h3 id="currentBalance">0</h3>
+                    <p>বর্তমান ব্যালেন্স</p>
+                </div>
+            </div>
+            
+            <div class="stat-card pending-card animate__animated animate__fadeInUp" style="animation-delay: 0.4s">
+                <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                <div class="stat-content">
+                    <h3 id="pendingProofs">0</h3>
+                    <p>পেন্ডিং প্রমাণ</p>
+                </div>
+            </div>
+            
+            <div class="stat-card members-card animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-content">
+                    <h3 id="totalMembers">0</h3>
+                    <p>মোট সদস্য</p>
+                </div>
+            </div>
+            
+            <div class="stat-card donors-card animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
+                <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                <div class="stat-content">
+                    <h3 id="activeDonors">0</h3>
+                    <p>রক্তদাতা</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tabs Navigation -->
+        <div class="admin-tabs">
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i> ড্যাশবোর্ড
+                </button>
+                <button class="tab-btn" data-tab="proofs">
+                    <i class="fas fa-check-circle"></i> প্রমাণ যাচাই
+                </button>
+                <button class="tab-btn" data-tab="members">
+                    <i class="fas fa-users"></i> সদস্য ব্যবস্থাপনা
+                </button>
+                <button class="tab-btn" data-tab="donations">
+                    <i class="fas fa-hand-holding-heart"></i> ডোনেশন
+                </button>
+                <button class="tab-btn" data-tab="expenses">
+                    <i class="fas fa-file-invoice-dollar"></i> ব্যয় ব্যবস্থাপনা
+                </button>
+                <button class="tab-btn" data-tab="notices">
+                    <i class="fas fa-bullhorn"></i> নোটিশ
+                </button>
+            </nav>
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-chart-line"></i> সর্বশেষ ডোনেশনসমূহ</h3>
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="fas fa-sync-alt"></i> রিফ্রেশ
+                        </button>
+                    </div>
                     <div class="table-container">
                         <table>
-                            <thead><tr><th>সদস্যের নাম</th><th>পরিমাণ</th><th>তারিখ</th></tr></thead>
-                            <tbody id="latest-donations-body"></tbody>
+                            <thead>
+                                <tr>
+                                    <th>সদস্য</th>
+                                    <th>পরিমাণ</th>
+                                    <th>তারিখ</th>
+                                    <th>উদ্দেশ্য</th>
+                                    <th>স্ট্যাটাস</th>
+                                </tr>
+                            </thead>
+                            <tbody id="latestDonations">
+                                <!-- Dynamically loaded -->
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-            <div id="proofs" class="page"><h2><i class="fas fa-check-circle"></i> অনুদান প্রমাণ যাচাই</h2><div class="card"><div class="table-container"><table><thead><tr><th>সদস্যের নাম</th><th>পরিমাণ</th><th>মাধ্যম</th><th>অ্যাকশন</th></tr></thead><tbody id="proof-table-body"></tbody></table></div></div></div>
-            <div id="members" class="page"><h2><i class="fas fa-users"></i> সদস্য পরিচালনা</h2><div class="card"><div class="table-container"><table><thead><tr><th>ছবি</th><th>নাম</th><th>মোবাইল</th><th>রক্তের গ্রুপ</th><th>অ্যাকশন</th></tr></thead><tbody id="member-table-body"></tbody></table></div></div></div>
-            <div id="donations" class="page"><h2><i class="fas fa-hand-holding-heart"></i> ডোনেশন পরিচালনা</h2><div class="card"><button class="btn btn-primary btn-add" onclick="openDonationAddModal()">নতুন ডোনেশন যোগ</button><div class="table-container"><table><thead><tr><th>সদস্যের নাম</th><th>পরিমাণ (টাকা)</th><th>তারিখ</th><th>উদ্দেশ্য</th><th>অ্যাকশন</th></tr></thead><tbody id="donation-table-body"></tbody></table></div></div></div>
-            <div id="expenses" class="page"><h2><i class="fas fa-file-invoice-dollar"></i> ব্যয় পরিচালনা</h2><div class="card"><button class="btn btn-primary btn-add" onclick="openModal('addExpenseModal')">নতুন ব্যয় যোগ</button><div class="table-container"><table><thead><tr><th>খাত</th><th>পরিমাণ (টাকা)</th><th>তারিখ</th><th>অ্যাকশন</th></tr></thead><tbody id="expense-table-body"></tbody></table></div></div></div>
-            <div id="notices" class="page"><h2><i class="fas fa-bullhorn"></i> নোটিশ পরিচালনা</h2><div class="card"><form id="noticeForm"><input type="hidden" id="noticeId"><div class="form-group"><label for="noticeTitle">শিরোনাম:</label><input type="text" id="noticeTitle" required></div><div class="form-group"><label for="noticeDetails">বিস্তারিত:</label><textarea id="noticeDetails" rows="4" required></textarea></div><button type="submit" class="btn btn-primary">প্রকাশ করুন</button></form></div><div class="card"><h3>প্রকাশিত নোটিশ</h3><div class="table-container"><table><thead><tr><th>শিরোনাম</th><th>অ্যাকশন</th></tr></thead><tbody id="notice-table-body"></tbody></table></div></div></div>
-        </main>
-    </div>
-
-    <!-- Modals -->
-    <div id="viewMemberModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('viewMemberModal')">&times;</span><h2>সদস্যের বিবরণ</h2><div class="view-info"><img id="viewImg" src=""><h3 id="viewName"></h3></div><table><tbody><tr><td>মোবাইল:</td><td id="viewPhone"></td></tr><tr><td>রক্তের গ্রুপ:</td><td id="viewBlood"></td></tr><tr><td>জন্ম তারিখ:</td><td id="viewDob"></td></tr><tr><td>বয়স:</td><td id="viewAge"></td></tr><tr><td>পেশা:</td><td id="viewIncome"></td></tr><tr><td>অবস্থান:</td><td id="viewLocation"></td></tr><tr><td>শেষ রক্তদান:</td><td id="viewLastDonation"></td></tr></tbody></table></div></div>
-    <div id="editMemberModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('editMemberModal')">&times;</span><h2>সদস্যের তথ্য সম্পাদন</h2><form id="editMemberForm"><input type="hidden" id="editMemberId"><div class="form-group"><label for="editName">নাম:</label><input type="text" id="editName" required></div><div class="form-group"><label for="editPhone">মোবাইল:</label><input type="text" id="editPhone" required></div><div class="form-group"><label for="editBlood">রক্তের গ্রুপ:</label><select id="editBlood" required><option value="">-- নির্বাচন করুন --</option><option value="A+">A+</option><option value="A-">A-</option><option value="B+">B+</option><option value="B-">B-</option><option value="O+">O+</option><option value="O-">O-</option><option value="AB+">AB+</option><option value="AB-">AB-</option></select></div><div class="form-group"><label for="editDob">জন্ম তারিখ (dd-mm-yyyy):</label><input type="text" id="editDob" placeholder="dd-mm-yyyy"></div><div class="form-group"><label for="editLastDonation">শেষ রক্তদানের তারিখ:</label><input type="date" id="editLastDonation"></div><div class="form-group"><label for="editIncome">পেশা:</label><input type="text" id="editIncome"></div><div class="form-group"><label for="editLocation">অবস্থান:</label><input type="text" id="editLocation"></div><div class="form-group"><label for="editImgUrl">ছবির URL:</label><input type="text" id="editImgUrl"></div><button type="submit" class="btn btn-primary">তথ্য আপডেট করুন</button></form></div></div>
-    <div id="verifyProofModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('verifyProofModal')">&times;</span><h2>অনুদান যাচাই</h2><p><strong>সদস্য:</strong> <span id="proofUserName"></span></p><p><strong>পরিমাণ:</strong> <span id="proofAmount"></span> টাকা</p><p><strong>মাধ্যম:</strong> <span id="proofMethod"></span></p><p><strong>উদ্দেশ্য:</strong> <span id="proofPurpose"></span></p><p><strong>ট্রানজেকশন আইডি:</strong> <span id="proofTrxId"></span></p><a id="proofImageLink" href="#" target="_blank" rel="noopener noreferrer"><img id="proofImage" src="" alt="Proof Screenshot" class="proof-img"></a><div style="margin-top: 20px; display: flex; justify-content: space-between;"><button id="approveBtn" class="btn btn-success">Approve</button><button id="rejectBtn" class="btn btn-danger">Reject</button></div></div></div>
-    <div id="donationModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('donationModal')">&times;</span><h2 id="donationModalTitle">নতুন ডোনেশন</h2><form id="donationForm"><input type="hidden" id="donationId"><div class="form-group"><label>সদস্য:</label><input type="text" id="donationMemberSearch" placeholder="সদস্যের নাম দিয়ে খুঁজুন..."><select id="donationMember" required></select></div><div class="form-group"><label>পরিমাণ:</label><input type="number" id="donationAmount" required></div><div class="form-group"><label>তারিখ:</label><input type="date" id="donationDate" required></div><div class="form-group"><label>উদ্দেশ্য:</label><select id="donationPurpose"></select></div><button type="submit" class="btn btn-primary">সেভ করুন</button></form></div></div>
-    <div id="addExpenseModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeModal('addExpenseModal')">&times;</span><h2>নতুন ব্যয়</h2><form id="addExpenseForm"><div class="form-group"><label for="expensePurpose">খাত নির্বাচন করুন:</label><select id="expensePurpose" required></select></div><div class="form-group"><label for="expenseAmount">টাকার পরিমাণ:</label><input type="number" id="expenseAmount" required></div><div class="form-group"><label for="expenseDate">তারিখ:</label><input type="date" id="expenseDate" required></div><button type="submit" class="btn btn-primary">সেভ করুন</button></form></div></div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-    import { getFirestore, collection, getDocs, doc, getDoc, updateDoc, addDoc, deleteDoc, writeBatch, query, where, serverTimestamp, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-
-    // Firebase Config - আপনার নিজের কনফিগ ব্যবহার করুন
-    const firebaseConfig = { apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc", authDomain: "songho-8ef5c.firebaseapp.com", projectId: "songho-8ef5c", storageBucket: "songho-8ef5c.appspot.com", messagingSenderId: "489031747232", appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5", measurementId: "G-5NY15E3XJJ" };
-    
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    
-    let allMembers = [];
-    const donationPurposes = { "samajik": "সামাজিক উন্নয়ন", "khela": "খেলাধুলা", "mosjid": "মসজিদ উন্নয়ন", "madrasa": "মাদ্রাসা", "eid": "ঈদ উৎসব", "shikkha": "নামাজ/কুরআন শিক্ষা", "hafez": "হাফেজদের জন্য" };
-
-    const menuToggle = document.getElementById('menu-toggle');
-    const sidebar = document.getElementById('sidebar');
-    menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
-
-    onAuthStateChanged(auth, async user => {
-        if (user) { 
-            try {
-                const adminDoc = await getDoc(doc(db, "admins", user.uid));
-                if (adminDoc.exists()) {
-                    loadAllAdminData(); 
-                } else {
-                    alert("You are not authorized to access this page.");
-                    signOut(auth);
-                }
-            } catch (error) {
-                console.error("Authorization check failed:", error);
-                alert("Could not verify admin status. Please check your connection and Firestore rules.");
-                signOut(auth);
-            }
-        } else { 
-            window.location.href = 'admin-login.html'; 
-        }
-    });
-    document.getElementById('adminLogoutBtn').addEventListener('click', () => signOut(auth));
-
-    async function loadAllAdminData(){
-        showPage('dashboard');
-        document.querySelector('.nav-link.active')?.classList.remove('active');
-        document.querySelector('.nav-link[onclick="showPage(\'dashboard\')"]')?.classList.add('active');
-
-        await Promise.all([
-            loadAdminMembers(),
-            loadDashboardData(),
-            loadAdminNotices(),
-            loadDonationProofs(),
-            loadAdminDonations(),
-            loadAdminExpenses()
-        ]);
-        populatePurposeDropdowns();
-    }
-
-    async function loadDashboardData() {
-        try {
-            const [donationsSnapshot, expensesSnapshot, proofsSnapshot] = await Promise.all([
-                getDocs(collection(db, "donations")), 
-                getDocs(query(collection(db, "expenses"))),
-                getDocs(query(collection(db, "donation_proofs"), where("status", "==", "pending")))
-            ]);
-            let totalIncome = 0;
-            donationsSnapshot.forEach(doc => totalIncome += Number(doc.data().amount || 0));
-            let totalExpense = 0;
-            expensesSnapshot.forEach(doc => totalExpense += Number(doc.data().amount || 0));
-            document.getElementById('totalIncome').textContent = `${totalIncome.toLocaleString('bn-BD')} টাকা`;
-            document.getElementById('totalExpense').textContent = `${totalExpense.toLocaleString('bn-BD')} টাকা`;
-            document.getElementById('totalBalance').textContent = `${(totalIncome - totalExpense).toLocaleString('bn-BD')} টাকা`;
-            document.getElementById('pendingProofs').textContent = proofsSnapshot.size;
             
-            const latestDonationsQuery = query(collection(db, "donations"), orderBy("date", "desc"), limit(5));
-            const latestDonationsSnapshot = await getDocs(latestDonationsQuery);
-            const latestBody = document.getElementById('latest-donations-body');
-            latestBody.innerHTML = '';
-            if (latestDonationsSnapshot.empty) {
-                latestBody.innerHTML = '<tr><td colspan="3">কোনো ডোনেশন পাওয়া যায়নি।</td></tr>';
-            } else {
-                latestDonationsSnapshot.forEach(doc => {
-                    const d = doc.data();
-                    latestBody.innerHTML += `<tr><td>${d.userName || ''}</td><td>${d.amount || 0}</td><td>${d.date || ''}</td></tr>`;
-                });
-            }
-
-        } catch (error) {
-            console.error("Error loading dashboard data:", error);
-            document.getElementById('totalIncome').textContent = 'Error';
-            document.getElementById('totalExpense').textContent = 'Error';
-        }
-    }
-
-    async function loadAdminMembers() {
-        const tbody = document.getElementById('member-table-body');
-        tbody.innerHTML = '<tr><td colspan="5">লোড হচ্ছে...</td></tr>';
-        try {
-            const querySnapshot = await getDocs(collection(db, "members"));
-            tbody.innerHTML = ''; allMembers = [];
-            querySnapshot.forEach(doc => {
-                const member = { id: doc.id, ...doc.data() };
-                allMembers.push(member);
-                tbody.innerHTML += `
-                    <tr>
-                        <td><img src="${member.img || 'https://via.placeholder.com/40'}" alt="${member.name}" width="40" height="40" style="border-radius:50%;"></td>
-                        <td>${member.name || 'নাম নেই'}</td>
-                        <td>${member.phone || 'N/A'}</td>
-                        <td>${member.blood || 'N/A'}</td>
-                        <td>
-                            <button class="btn btn-info" onclick="openViewModal('${member.id}')">View</button>
-                            <button class="btn btn-warning" onclick="openEditModal('${member.id}')">Edit</button>
-                            <button class="btn btn-danger" onclick="deleteData('members', '${member.id}')">Delete</button>
-                        </td>
-                    </tr>`;
-            });
-        } catch (error) {
-            console.error("Error loading members:", error);
-            tbody.innerHTML = '<tr><td colspan="5">সদস্য তালিকা লোড করা সম্ভব হয়নি।</td></tr>';
-        }
-    }
+            <!-- Proofs Tab -->
+            <div id="proofs" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-check-circle"></i> পেন্ডিং প্রমাণ যাচাই</h3>
+                        <button class="btn btn-success" onclick="verifyAll()">
+                            <i class="fas fa-check-double"></i> সবগুলো যাচাই
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>সদস্য</th>
+                                    <th>পরিমাণ</th>
+                                    <th>মাধ্যম</th>
+                                    <th>ট্রাঙ্কশন আইডি</th>
+                                    <th>প্রমাণ</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proofsTable">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Members Tab -->
+            <div id="members" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-users"></i> সদস্য তালিকা</h3>
+                        <button class="btn btn-primary" onclick="openAddMemberModal()">
+                            <i class="fas fa-user-plus"></i> নতুন সদস্য
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ছবি</th>
+                                    <th>নাম</th>
+                                    <th>ফোন</th>
+                                    <th>রক্তের গ্রুপ</th>
+                                    <th>অবস্থান</th>
+                                    <th>ধরণ</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="membersTable">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Donations Tab -->
+            <div id="donations" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-hand-holding-heart"></i> মোট ডোনেশন</h3>
+                        <button class="btn btn-info" onclick="exportDonations()">
+                            <i class="fas fa-download"></i> এক্সপোর্ট
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>সদস্য</th>
+                                    <th>পরিমাণ</th>
+                                    <th>তারিখ</th>
+                                    <th>উদ্দেশ্য</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="donationsTable">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Expenses Tab -->
+            <div id="expenses" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-file-invoice-dollar"></i> ব্যয় তালিকা</h3>
+                        <button class="btn btn-warning" onclick="openAddExpenseModal()">
+                            <i class="fas fa-plus-circle"></i> নতুন ব্যয়
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>খাত</th>
+                                    <th>পরিমাণ</th>
+                                    <th>তারিখ</th>
+                                    <th>বিবরণ</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="expensesTable">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notices Tab -->
+            <div id="notices" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-bullhorn"></i> নোটিশ ব্যবস্থাপনা</h3>
+                        <button class="btn btn-success" onclick="openAddNoticeModal()">
+                            <i class="fas fa-plus"></i> নতুন নোটিশ
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>শিরোনাম</th>
+                                    <th>বিস্তারিত</th>
+                                    <th>তারিখ</th>
+                                    <th>অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="noticesTable">
+                                <!-- Dynamically loaded -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     
-    window.openViewModal = async function(memberId) {
-        try {
-            const memberDoc = await getDoc(doc(db, "members", memberId));
-            if (memberDoc.exists()) {
-                const data = memberDoc.data();
-                document.getElementById('viewImg').src = data.img || 'https://via.placeholder.com/80';
-                document.getElementById('viewName').textContent = data.name || 'N/A';
-                document.getElementById('viewPhone').textContent = data.phone || 'N/A';
-                document.getElementById('viewBlood').textContent = data.blood || 'N/A';
-                document.getElementById('viewDob').textContent = data.dob || 'N/A';
-                document.getElementById('viewAge').textContent = data.dob ? `${calculateAge(data.dob)} বছর` : 'N/A';
-                document.getElementById('viewIncome').textContent = data.income || 'N/A';
-                document.getElementById('viewLocation').textContent = data.location || 'N/A';
-                document.getElementById('viewLastDonation').textContent = data.lastDonationDate || 'N/A';
-                openModal('viewMemberModal');
-            }
-        } catch (error) {
-            alert("সদস্যের তথ্য আনা সম্ভব হয়নি।");
-            console.error(error);
-        }
-    };
-
-    window.openEditModal = async function(memberId) {
-        const memberDoc = await getDoc(doc(db, "members", memberId));
-        if (memberDoc.exists()) {
-            const data = memberDoc.data();
-            document.getElementById('editMemberId').value = memberId;
-            document.getElementById('editName').value = data.name || '';
-            document.getElementById('editPhone').value = data.phone || '';
-            document.getElementById('editBlood').value = data.blood || '';
-            document.getElementById('editDob').value = data.dob || '';
-            document.getElementById('editLastDonation').value = data.lastDonationDate || '';
-            document.getElementById('editIncome').value = data.income || '';
-            document.getElementById('editLocation').value = data.location || '';
-            document.getElementById('editImgUrl').value = data.img || '';
-            openModal('editMemberModal');
-        } else { alert("সদস্যকে খুঁজে পাওয়া যায়নি।"); }
-    }
+    <!-- Modals -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> নতুন সদস্য যোগ করুন</h3>
+                <button class="close-btn" onclick="closeModal('addMemberModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addMemberForm">
+                    <div class="form-group">
+                        <label for="memberName">পুরো নাম *</label>
+                        <input type="text" id="memberName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberPhone">মোবাইল নম্বর *</label>
+                        <div style="display: flex;">
+                            <span style="padding: 12px; background: #eee; border: 2px solid #e0e0e0; border-right: none; border-radius: 10px 0 0 10px;">+880</span>
+                            <input type="tel" id="memberPhone" class="form-control" style="border-radius: 0 10px 10px 0;" placeholder="1xxxxxxxxx" maxlength="10" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberEmail">ইমেইল (ঐচ্ছিক)</label>
+                        <input type="email" id="memberEmail" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberBlood">রক্তের গ্রুপ</label>
+                        <select id="memberBlood" class="form-control">
+                            <option value="">-- নির্বাচন করুন --</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberDOB">জন্ম তারিখ</label>
+                        <input type="date" id="memberDOB" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberLocation">বর্তমান ঠিকানা</label>
+                        <input type="text" id="memberLocation" class="form-control" placeholder="গ্রাম/মহল্লা, ইউনিয়ন, উপজেলা">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberOccupation">পেশা</label>
+                        <input type="text" id="memberOccupation" class="form-control" placeholder="ছাত্র/চাকুরিজীবী/ব্যবসায়ী">
+                    </div>
+                    <div class="form-group">
+                        <label for="memberType">সদস্যের ধরণ</label>
+                        <select id="memberType" class="form-control">
+                            <option value="regular">সাধারণ সদস্য</option>
+                            <option value="guest">গেস্ট সদস্য</option>
+                            <option value="executive">কার্যনির্বাহী</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>রক্তদানে আগ্রহী?</label>
+                        <div>
+                            <label style="margin-right: 20px;">
+                                <input type="radio" name="bloodDonor" value="yes" checked> হ্যাঁ
+                            </label>
+                            <label>
+                                <input type="radio" name="bloodDonor" value="no"> না
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                        <i class="fas fa-save"></i> সদস্য যোগ করুন
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
     
-    document.getElementById('editMemberForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const memberId = document.getElementById('editMemberId').value;
-        const updatedData = {
-            name: document.getElementById('editName').value, phone: document.getElementById('editPhone').value,
-            blood: document.getElementById('editBlood').value, dob: document.getElementById('editDob').value,
-            lastDonationDate: document.getElementById('editLastDonation').value,
-            income: document.getElementById('editIncome').value, location: document.getElementById('editLocation').value,
-            img: document.getElementById('editImgUrl').value
-        };
-        try {
-            await updateDoc(doc(db, "members", memberId), updatedData);
-            alert("সদস্যের তথ্য সফলভাবে আপডেট হয়েছে!");
-            closeModal('editMemberModal'); loadAdminMembers();
-        } catch (error) { alert("আপডেট করতে সমস্যা হয়েছে: " + error.message); }
-    });
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> নতুন ব্যয় যোগ করুন</h3>
+                <button class="close-btn" onclick="closeModal('addExpenseModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addExpenseForm">
+                    <div class="form-group">
+                        <label for="expenseCategory">খাত *</label>
+                        <select id="expenseCategory" class="form-control" required>
+                            <option value="">-- নির্বাচন করুন --</option>
+                            <option value="samajik">সামাজিক উন্নয়ন</option>
+                            <option value="khela">খেলাধুলা</option>
+                            <option value="mosjid">মসজিদ উন্নয়ন</option>
+                            <option value="madrasa">মাদ্রাসা</option>
+                            <option value="eid">ঈদ উৎসব</option>
+                            <option value="shikkha">নামাজ/কুরআন শিক্ষা</option>
+                            <option value="hafez">হাফেজদের জন্য</option>
+                            <option value="other">অন্যান্য</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseAmount">টাকার পরিমাণ *</label>
+                        <input type="number" id="expenseAmount" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDate">তারিখ *</label>
+                        <input type="date" id="expenseDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseDescription">বিবরণ (ঐচ্ছিক)</label>
+                        <textarea id="expenseDescription" class="form-control" rows="3" placeholder="ব্যয়ের বিস্তারিত বিবরণ"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-warning" style="width: 100%; padding: 15px;">
+                        <i class="fas fa-save"></i> ব্যয় সংরক্ষণ করুন
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
     
-    // --- All other functions (proof verification, donations, expenses, etc.) are the same as the previous correct version ---
-    // --- I am including them here again for completeness ---
-    async function loadDonationProofs() { const tbody = document.getElementById('proof-table-body'); tbody.innerHTML = '<tr><td colspan="4">লোড হচ্ছে...</td></tr>'; try { const q = query(collection(db, "donation_proofs"), where("status", "==", "pending")); const querySnapshot = await getDocs(q); tbody.innerHTML = ''; if (querySnapshot.empty) { tbody.innerHTML = '<tr><td colspan="4">কোনো পেন্ডিং প্রমাণ নেই।</td></tr>'; return; } querySnapshot.forEach(doc => { const proof = doc.data(); tbody.innerHTML += `<tr><td>${proof.userName}</td><td>${proof.amount}</td><td>${proof.method}</td><td><button class="btn btn-warning" onclick="openProofModal('${doc.id}')">Verify</button></td></tr>`; }); } catch (error) { console.error("Error loading proofs:", error); tbody.innerHTML = '<tr><td colspan="4">প্রমাণ তালিকা লোড করা সম্ভব হয়নি।</td></tr>'; } }
-    window.openProofModal = async function(proofId) { const proofDoc = await getDoc(doc(db, "donation_proofs", proofId)); if (proofDoc.exists()) { const data = proofDoc.data(); document.getElementById('proofUserName').textContent = data.userName; document.getElementById('proofAmount').textContent = data.amount; document.getElementById('proofMethod').textContent = data.method; document.getElementById('proofPurpose').textContent = donationPurposes[data.purposeKey] || 'N/A'; document.getElementById('proofTrxId').textContent = data.trxId || 'N/A'; document.getElementById('proofImage').src = data.imageUrl; document.getElementById('proofImageLink').href = data.imageUrl; document.getElementById('approveBtn').onclick = () => verifyProof(proofId, 'approved'); document.getElementById('rejectBtn').onclick = () => verifyProof(proofId, 'rejected'); openModal('verifyProofModal'); } else { alert("প্রমাণটি খুঁজে পাওয়া যায়নি।"); } }
-    window.verifyProof = async function(proofId, status) { if (!confirm(`Are you sure you want to ${status} this proof?`)) return; try { const proofRef = doc(db, "donation_proofs", proofId); const batch = writeBatch(db); if (status === 'approved') { const proofDoc = await getDoc(proofRef); const proofData = proofDoc.data(); const memberDoc = await getDoc(doc(db, "members", proofData.userId)); const memberData = memberDoc.exists() ? memberDoc.data() : {}; const newDonationRef = doc(collection(db, "donations")); batch.set(newDonationRef, { amount: Number(proofData.amount), date: new Date().toISOString().split('T')[0].split('-').reverse().join('-'), purposeKey: proofData.purposeKey, userId: proofData.userId, userName: proofData.userName, userImage: memberData.img || '' }); } batch.update(proofRef, { status: status }); await batch.commit(); alert(`Proof has been ${status}.`); closeModal('verifyProofModal'); loadAllAdminData(); } catch (error) { console.error("Verification Error: ", error); alert("An error occurred: " + error.message); } }
-    window.deleteData = async function(collectionName, docId) { if (confirm("আপনি কি নিশ্চিতভাবে এই আইটেমটি মুছে ফেলতে চান?")){ try { await deleteDoc(doc(db, collectionName, docId)); alert("আইটেমটি মুছে ফেলা হয়েছে।"); loadAllAdminData(); } catch (error) { alert("মুছে ফেলতে সমস্যা হয়েছে: " + error.message); } } }
-    document.getElementById('donationMemberSearch').addEventListener('keyup', (e) => { const searchText = e.target.value.toLowerCase(); const filteredMembers = allMembers.filter(m => m.name.toLowerCase().includes(searchText)); const select = document.getElementById('donationMember'); select.innerHTML = ''; filteredMembers.forEach(m => { select.innerHTML += `<option value="${m.id}" data-name="${m.name}" data-image="${m.img}">${m.name}</option>`; }); });
-    window.openDonationAddModal = function() { document.getElementById('donationForm').reset(); document.getElementById('donationId').value = ''; document.getElementById('donationModalTitle').textContent = "নতুন ডোনেশন"; document.getElementById('donationMemberSearch').value = ''; document.getElementById('donationMember').innerHTML = ''; openModal('donationModal'); }
-    window.openDonationEditModal = async function(donationId) { const docSnap = await getDoc(doc(db, "donations", donationId)); if (docSnap.exists()) { const data = docSnap.data(); document.getElementById('donationId').value = donationId; document.getElementById('donationModalTitle').textContent = "ডোনেশন এডিট"; document.getElementById('donationMemberSearch').value = data.userName; document.getElementById('donationMember').innerHTML = `<option value="${data.userId}" data-name="${data.userName}" data-image="${data.userImage}">${data.userName}</option>`; document.getElementById('donationAmount').value = data.amount; try { document.getElementById('donationDate').value = data.date.split('-').reverse().join('-'); } catch(e){ document.getElementById('donationDate').value = ''; } document.getElementById('donationPurpose').value = data.purposeKey || ''; openModal('donationModal'); } }
-    document.getElementById('donationForm').addEventListener('submit', async (e) => { e.preventDefault(); const donationId = document.getElementById('donationId').value; const memberSelect = document.getElementById('donationMember'); if (memberSelect.options.length === 0) { alert("অনুগ্রহ করে একজন সদস্য নির্বাচন করুন।"); return; } const selectedOption = memberSelect.options[memberSelect.selectedIndex]; const dateInput = document.getElementById('donationDate').value; const formattedDate = dateInput.split('-').reverse().join('-'); const data = { userId: selectedOption.value, userName: selectedOption.dataset.name, userImage: selectedOption.dataset.image || '', amount: document.getElementById('donationAmount').value, date: formattedDate, purposeKey: document.getElementById('donationPurpose').value }; if (donationId) { await updateDoc(doc(db, "donations", donationId), data); alert('ডোনেশন আপডেট হয়েছে!'); } else { await addDoc(collection(db, "donations"), data); alert('ডোনেশন যোগ করা হয়েছে!'); } closeModal('donationModal'); loadAllAdminData(); });
-    async function loadAdminDonations() { const tbody = document.getElementById('donation-table-body'); try { const querySnapshot = await getDocs(collection(db, "donations")); tbody.innerHTML = ''; querySnapshot.forEach(doc => { const d = doc.data(); tbody.innerHTML += `<tr><td>${d.userName}</td><td>${d.amount}</td><td>${d.date}</td><td>${donationPurposes[d.purposeKey] || ''}</td><td><button class="btn btn-warning" onclick="openDonationEditModal('${doc.id}')">Edit</button><button class="btn btn-danger" onclick="deleteData('donations', '${doc.id}')">Delete</button></td></tr>`; }); } catch (e) { tbody.innerHTML = `<tr><td colspan="5">Error</td></tr>`; } }
-    function populatePurposeDropdowns() { const selects = [document.getElementById('expensePurpose'), document.getElementById('donationPurpose')]; selects.forEach(select => { if (select) { select.innerHTML = '<option value="">-- খাত নির্বাচন করুন --</option>'; for (const key in donationPurposes) { select.innerHTML += `<option value="${key}">${donationPurposes[key]}</option>`; } } }); }
-    document.getElementById('addExpenseForm').addEventListener('submit', async (e) => { e.preventDefault(); const dateInput = document.getElementById('expenseDate').value; const formattedDate = dateInput.split('-').reverse().join('-'); const data = { purposeKey: document.getElementById('expensePurpose').value, amount: document.getElementById('expenseAmount').value, date: formattedDate }; await addDoc(collection(db, "expenses"), data); alert('ব্যয় যোগ করা হয়েছে!'); closeModal('addExpenseModal'); loadAllAdminData(); });
-    async function loadAdminExpenses() { const tbody = document.getElementById('expense-table-body'); const querySnapshot = await getDocs(collection(db, "expenses")); tbody.innerHTML = ''; querySnapshot.forEach(doc => { const e = doc.data(); tbody.innerHTML += `<tr><td>${donationPurposes[e.purposeKey] || ''}</td><td>${e.amount}</td><td>${e.date}</td><td><button class="btn btn-danger" onclick="deleteData('expenses', '${doc.id}')">Delete</button></td></tr>`; }); }
-    document.getElementById('noticeForm').addEventListener('submit', async (e) => { e.preventDefault(); const noticeId = document.getElementById('noticeId').value; const data = { title: document.getElementById('noticeTitle').value, details: document.getElementById('noticeDetails').value, createdAt: serverTimestamp() }; if (noticeId) { await updateDoc(doc(db, "notices", noticeId), data); alert('নোটিশ আপডেট হয়েছে!'); } else { await addDoc(collection(db, "notices"), data); alert('নোটিশ প্রকাশ করা হয়েছে!'); } e.target.reset(); document.getElementById('noticeId').value = ''; loadAdminNotices(); });
-    async function loadAdminNotices() { const tbody = document.getElementById('notice-table-body'); const querySnapshot = await getDocs(collection(db, "notices")); tbody.innerHTML = ''; querySnapshot.forEach(doc => { const notice = doc.data(); tbody.innerHTML += `<tr><td>${notice.title}</td><td><button class="btn btn-danger" onclick="deleteData('notices', '${doc.id}')">Delete</button></td></tr>`; }); }
-    window.showPage = (pageId) => { document.querySelectorAll('.page').forEach(p => p.classList.remove('active')); document.getElementById(pageId).classList.add('active'); document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active')); document.querySelector(`.nav-link[onclick="showPage('${pageId}')"]`).classList.add('active'); if(window.innerWidth <= 768) { sidebar.classList.remove('open'); } };
-    function calculateAge(dateString) { if (!dateString) return 'N/A'; try { const parts = dateString.split('-'); const birthDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0])); return Math.abs(new Date(Date.now() - birthDate.getTime()).getUTCFullYear() - 1970); } catch (e) { return "N/A"; } }
-    window.openModal = (modalId) => document.getElementById(modalId).style.display = 'block'; window.closeModal = (modalId) => document.getElementById(modalId).style.display = 'none';
-</script>
+    <!-- View Proof Modal -->
+    <div id="viewProofModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-search"></i> প্রমাণ যাচাই করুন</h3>
+                <button class="close-btn" onclick="closeModal('viewProofModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="proofDetails">
+                    <!-- Dynamically loaded -->
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn btn-success" onclick="approveProof()" style="flex: 1;">
+                        <i class="fas fa-check"></i> অনুমোদন করুন
+                    </button>
+                    <button class="btn btn-danger" onclick="rejectProof()" style="flex: 1;">
+                        <i class="fas fa-times"></i> প্রত্যাখ্যান করুন
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script type="module" src="./js/admin-app.js"></script>
 </body>
 </html>
