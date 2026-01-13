@@ -3,122 +3,1208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>হিজলী দিঘাপাড়া যুব সংঘ</title>
+    <title>লগইন - হিজলী দিঘাপাড়া যুব সংঘ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="manifest" href="manifest.json">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #16a085;
+            --primary-dark: #138d75;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gray: #95a5a6;
+            --white: #ffffff;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --radius: 15px;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--dark);
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .login-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .login-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .login-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .established {
+            display: inline-block;
+            background: var(--white);
+            color: var(--primary);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--light);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+        
+        .tab-btn.active {
+            background: var(--white);
+            color: var(--primary);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 45px 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 42px;
+            color: var(--gray);
+            cursor: pointer;
+        }
+        
+        .phone-input {
+            display: flex;
+        }
+        
+        .phone-input .prefix {
+            padding: 15px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            font-weight: 600;
+        }
+        
+        .phone-input input {
+            border-radius: 0 10px 10px 0;
+            padding-left: 15px;
+        }
+        
+        .form-hint {
+            display: block;
+            margin-top: 5px;
+            color: var(--gray);
+            font-size: 0.85rem;
+        }
+        
+        .error-message {
+            color: var(--danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .success-message {
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Hind Siliguri', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: var(--white);
+        }
+        
+        .btn-info {
+            background: var(--info);
+            color: var(--white);
+        }
+        
+        .btn-google {
+            background: #db4437;
+            color: var(--white);
+        }
+        
+        .switch-mode {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .switch-mode a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .switch-mode a:hover {
+            text-decoration: underline;
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+        
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #eee;
+        }
+        
+        .divider span {
+            background: var(--white);
+            padding: 0 20px;
+            color: var(--gray);
+            position: relative;
+        }
+        
+        .social-login {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .social-btn:hover {
+            border-color: var(--primary);
+            background: var(--white);
+        }
+        
+        .social-btn.google {
+            color: #db4437;
+        }
+        
+        .social-btn.guest {
+            color: var(--dark);
+        }
+        
+        .guest-info {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .guest-info i {
+            color: var(--info);
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .guest-info h3 {
+            margin-bottom: 10px;
+        }
+        
+        .guest-info p {
+            color: var(--gray);
+        }
+        
+        .login-footer {
+            margin-top: 30px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: var(--white);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 480px) {
+            .login-header {
+                padding: 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .login-body {
+                padding: 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .social-login {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
-<body class="login-page">
-    <div class="container">
-        <div class="login-card animate__animated animate__fadeIn">
-            <div class="login-header">
-                <h1><i class="fas fa-hands-helping"></i> হিজলী দিঘাপাড়া যুব সংঘ</h1>
-                <p class="subtitle">একটি সেবা মূলক অরাজনৈতিক প্রতিষ্ঠান</p>
-                <div class="established">স্থাপিত: ২০২৬</div>
+<body>
+    <div class="login-container animate__animated animate__fadeIn">
+        <!-- Header -->
+        <div class="login-header">
+            <h1><i class="fas fa-hands-helping"></i> হিজলী দিঘাপাড়া যুব সংঘ</h1>
+            <p>হিজলী দিঘাপাড়া, বাগাতিপাড়া, নাটোর</p>
+            <div class="established">স্থাপিত: ২০২৬</div>
+        </div>
+        
+        <!-- Body -->
+        <div class="login-body">
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">লগইন</button>
+                <button class="tab-btn" data-tab="register">রেজিস্টার</button>
+                <button class="tab-btn" data-tab="guest">গেস্ট</button>
             </div>
             
-            <div class="login-body">
-                <div class="tabs">
-                    <button class="tab-btn active" data-tab="login">লগইন</button>
-                    <button class="tab-btn" data-tab="register">রেজিস্টার</button>
-                    <button class="tab-btn" data-tab="guest">গেস্ট</button>
+            <!-- Login Tab -->
+            <div id="login" class="tab-content active">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail"><i class="fas fa-envelope"></i> ইমেইল</label>
+                        <input type="email" id="loginEmail" placeholder="example@gmail.com" required>
+                        <span class="form-hint">শুধুমাত্র @gmail.com বা @outlook.com</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword"><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
+                        <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড দিন" required>
+                        <span class="toggle-password" data-target="loginPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> লগইন করুন
+                    </button>
+                    
+                    <div class="switch-mode">
+                        অ্যাকাউন্ট নেই? <a href="#" class="switch-to-register">রেজিস্টার করুন</a>
+                        <br>
+                        <a href="#" id="forgotPassword">পাসওয়ার্ড ভুলে গেছেন?</a>
+                    </div>
+                </form>
+                
+                <div class="divider">
+                    <span>অথবা</span>
                 </div>
                 
-                <div id="login" class="tab-content active">
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> ইমেইল বা ফোন</label>
-                            <input type="text" id="loginId" placeholder="example@gmail.com অথবা 01xxxxxxxxx" required>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
-                            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড দিন" required>
-                            <span class="toggle-password"><i class="fas fa-eye"></i></span>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-sign-in-alt"></i> লগইন করুন
-                        </button>
-                    </form>
-                    <div class="divider">
-                        <span>অথবা</span>
-                    </div>
-                    <button class="btn btn-google" id="googleLogin">
-                        <i class="fab fa-google"></i> Google দিয়ে লগইন
+                <div class="social-login">
+                    <button class="social-btn google" id="googleLoginBtn">
+                        <i class="fab fa-google"></i> Google
+                    </button>
+                    <button class="social-btn guest" id="guestLoginBtn">
+                        <i class="fas fa-user-secret"></i> Guest
                     </button>
                 </div>
-                
-                <div id="register" class="tab-content">
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> পুরো নাম</label>
-                            <input type="text" id="regName" placeholder="আপনার পুরো নাম" required>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> মোবাইল নম্বর</label>
-                            <div class="phone-input">
-                                <span class="prefix">+880</span>
-                                <input type="tel" id="regPhone" placeholder="1xxxxxxxxx" maxlength="10" required>
-                            </div>
-                            <small class="phone-hint">11 ডিজিট (01 দিয়ে শুরু)</small>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-envelope"></i> ইমেইল (ঐচ্ছিক)</label>
-                            <input type="email" id="regEmail" placeholder="example@gmail.com">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
-                            <input type="password" id="regPassword" placeholder="কমপক্ষে ৬ অক্ষর" required>
-                            <span class="toggle-password"><i class="fas fa-eye"></i></span>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-lock"></i> পাসওয়ার্ড নিশ্চিত করুন</label>
-                            <input type="password" id="regConfirmPassword" placeholder="পুনরায় পাসওয়ার্ড দিন" required>
-                        </div>
-                        <button type="submit" class="btn btn-success">
-                            <i class="fas fa-user-plus"></i> অ্যাকাউন্ট তৈরি করুন
-                        </button>
-                    </form>
-                </div>
-                
-                <div id="guest" class="tab-content">
-                    <div class="guest-info">
-                        <i class="fas fa-user-secret fa-3x"></i>
-                        <h3>গেস্ট অ্যাকাউন্ট</h3>
-                        <p>রেজিস্টার ছাড়াই সংক্ষিপ্ত তথ্য দিয়ে প্রবেশ করুন</p>
+            </div>
+            
+            <!-- Register Tab -->
+            <div id="register" class="tab-content">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="regName"><i class="fas fa-user"></i> পুরো নাম</label>
+                        <input type="text" id="regName" placeholder="আপনার পুরো নাম" required>
                     </div>
-                    <form id="guestForm">
-                        <div class="form-group">
-                            <label><i class="fas fa-user"></i> আপনার নাম</label>
-                            <input type="text" id="guestName" placeholder="আপনার নাম" required>
+                    
+                    <div class="form-group">
+                        <label for="regPhone"><i class="fas fa-phone"></i> মোবাইল নম্বর</label>
+                        <div class="phone-input">
+                            <span class="prefix">+880</span>
+                            <input type="tel" id="regPhone" placeholder="1xxxxxxxxx" maxlength="10" required>
                         </div>
-                        <div class="form-group">
-                            <label><i class="fas fa-phone"></i> মোবাইল নম্বর</label>
-                            <div class="phone-input">
-                                <span class="prefix">+880</span>
-                                <input type="tel" id="guestPhone" placeholder="1xxxxxxxxx" maxlength="10" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-info">
-                            <i class="fas fa-play"></i> শুরু করুন
-                        </button>
-                    </form>
+                        <span class="form-hint">11 ডিজিট (01 দিয়ে শুরু)</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regEmail"><i class="fas fa-envelope"></i> ইমেইল</label>
+                        <input type="email" id="regEmail" placeholder="example@gmail.com" required>
+                        <span class="form-hint">শুধুমাত্র @gmail.com বা @outlook.com</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regPassword"><i class="fas fa-lock"></i> পাসওয়ার্ড</label>
+                        <input type="password" id="regPassword" placeholder="কমপক্ষে ৬ অক্ষর" required>
+                        <span class="toggle-password" data-target="regPassword">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regConfirmPassword"><i class="fas fa-lock"></i> পাসওয়ার্ড নিশ্চিত করুন</label>
+                        <input type="password" id="regConfirmPassword" placeholder="পুনরায় পাসওয়ার্ড দিন" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" id="registerBtn">
+                        <i class="fas fa-user-plus"></i> অ্যাকাউন্ট তৈরি করুন
+                    </button>
+                    
+                    <div class="switch-mode">
+                        ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="#" class="switch-to-login">লগইন করুন</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Guest Tab -->
+            <div id="guest" class="tab-content">
+                <div class="guest-info">
+                    <i class="fas fa-user-secret"></i>
+                    <h3>গেস্ট অ্যাকাউন্ট</h3>
+                    <p>রেজিস্টার ছাড়াই সংক্ষিপ্ত তথ্য দিয়ে প্রবেশ করুন</p>
                 </div>
                 
-                <div class="login-footer">
-                    <p>অ্যাডমিন লগইন <a href="admin-login.html">এখানে ক্লিক করুন</a></p>
-                    <p class="copyright">© ২০২৬ হিজলী দিঘাপাড়া যুব সংঘ | সর্বস্বত্ব সংরক্ষিত</p>
-                </div>
+                <form id="guestForm">
+                    <div class="form-group">
+                        <label for="guestName"><i class="fas fa-user"></i> আপনার নাম</label>
+                        <input type="text" id="guestName" placeholder="আপনার নাম" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="guestPhone"><i class="fas fa-phone"></i> মোবাইল নম্বর</label>
+                        <div class="phone-input">
+                            <span class="prefix">+880</span>
+                            <input type="tel" id="guestPhone" placeholder="1xxxxxxxxx" maxlength="10" required>
+                        </div>
+                        <span class="form-hint">11 ডিজিট (01 দিয়ে শুরু)</span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-info" id="guestBtn">
+                        <i class="fas fa-play"></i> শুরু করুন
+                    </button>
+                    
+                    <div class="switch-mode">
+                        রেজিস্টার্ড সদস্য? <a href="#" class="switch-to-login">লগইন করুন</a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Admin Login Link -->
+            <div class="login-footer">
+                <p>অ্যাডমিন লগইন <a href="admin-login.html">এখানে ক্লিক করুন</a></p>
+                <p class="copyright">© ২০২৬ হিজলী দিঘাপাড়া যুব সংঘ | সর্বস্বত্ব সংরক্ষিত</p>
             </div>
         </div>
     </div>
     
-    <script src="js/auth.js"></script>
-    <script src="js/validation.js"></script>
+    <!-- Firebase and App JS -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/service-worker.js');
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDerc9e0-e7WBnkK2GoinFejp7zszXJ3Jc",
+            authDomain: "songho-8ef5c.firebaseapp.com",
+            projectId: "songho-8ef5c",
+            storageBucket: "songho-8ef5c.appspot.com",
+            messagingSenderId: "489031747232",
+            appId: "1:489031747232:web:4c1cde63dabaa620ed2bc5",
+            measurementId: "G-5NY15E3XJJ"
+        };
+        
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        class LoginApp {
+            constructor() {
+                this.currentTab = 'login';
+                this.init();
+            }
+            
+            init() {
+                // Initialize UI
+                this.initUI();
+                
+                // Check auth state
+                this.checkAuthState();
+                
+                console.log('Login app initialized');
+            }
+            
+            initUI() {
+                // Tab switching
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.switchTab(e.target.dataset.tab);
+                    });
+                });
+                
+                // Switch mode links
+                document.querySelectorAll('.switch-to-register').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.switchTab('register');
+                    });
+                });
+                
+                document.querySelectorAll('.switch-to-login').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.switchTab('login');
+                    });
+                });
+                
+                // Password toggle
+                document.querySelectorAll('.toggle-password').forEach(toggle => {
+                    toggle.addEventListener('click', (e) => {
+                        this.togglePassword(e.target.closest('.toggle-password'));
+                    });
+                });
+                
+                // Form submissions
+                document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+                document.getElementById('registerForm').addEventListener('submit', (e) => this.handleRegister(e));
+                document.getElementById('guestForm').addEventListener('submit', (e) => this.handleGuest(e));
+                
+                // Social login buttons
+                document.getElementById('googleLoginBtn').addEventListener('click', () => this.handleGoogleLogin());
+                document.getElementById('guestLoginBtn').addEventListener('click', () => this.switchTab('guest'));
+                
+                // Forgot password
+                document.getElementById('forgotPassword').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.handleForgotPassword();
+                });
+                
+                // Real-time phone validation
+                this.initValidation();
+            }
+            
+            switchTab(tabName) {
+                this.currentTab = tabName;
+                
+                // Update active tab button
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.tab === tabName);
+                });
+                
+                // Show active tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.toggle('active', content.id === tabName);
+                });
+                
+                // Clear all errors
+                this.clearErrors();
+            }
+            
+            togglePassword(element) {
+                const targetId = element.dataset.target;
+                const input = document.getElementById(targetId);
+                const icon = element.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            }
+            
+            initValidation() {
+                // Phone number validation
+                document.getElementById('regPhone')?.addEventListener('input', (e) => {
+                    this.formatPhoneNumber(e.target);
+                });
+                
+                document.getElementById('guestPhone')?.addEventListener('input', (e) => {
+                    this.formatPhoneNumber(e.target);
+                });
+                
+                // Password validation for register
+                document.getElementById('regPassword')?.addEventListener('input', (e) => {
+                    this.validatePassword(e.target.value);
+                });
+            }
+            
+            formatPhoneNumber(input) {
+                // Remove non-digits
+                let value = input.value.replace(/\D/g, '');
+                
+                // Limit to 10 digits
+                if (value.length > 10) {
+                    value = value.substring(0, 10);
+                }
+                
+                // Update input value
+                input.value = value;
+                
+                // Real-time validation
+                if (value.length === 10) {
+                    if (!value.startsWith('1')) {
+                        this.showError(input, 'ফোন নম্বর 1 দিয়ে শুরু হতে হবে');
+                    } else {
+                        this.clearError(input);
+                    }
+                }
+            }
+            
+            validatePassword(password) {
+                const errors = [];
+                
+                if (password.length < 6) {
+                    errors.push('কমপক্ষে ৬ অক্ষর');
+                }
+                if (!/[A-Z]/.test(password)) {
+                    errors.push('একটি বড় হাতের অক্ষর (A-Z)');
+                }
+                if (!/[a-z]/.test(password)) {
+                    errors.push('একটি ছোট হাতের অক্ষর (a-z)');
+                }
+                if (!/\d/.test(password)) {
+                    errors.push('একটি সংখ্যা (0-9)');
+                }
+                if (!/[!@#$%^&*]/.test(password)) {
+                    errors.push('একটি স্পেশাল ক্যারেক্টার (!@#$%^&*)');
+                }
+                
+                return errors;
+            }
+            
+            async handleLogin(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+                const loginBtn = document.getElementById('loginBtn');
+                
+                // Validation
+                if (!email || !password) {
+                    this.showError('loginForm', 'অনুগ্রহ করে ইমেইল এবং পাসওয়ার্ড দিন');
+                    return;
+                }
+                
+                // Validate email domain
+                if (!this.isValidEmail(email)) {
+                    this.showError('loginForm', 'শুধুমাত্র @gmail.com বা @outlook.com ইমেইল গ্রহণযোগ্য');
+                    return;
+                }
+                
+                try {
+                    // Show loading
+                    const originalText = loginBtn.innerHTML;
+                    loginBtn.innerHTML = '<div class="loader"></div>';
+                    loginBtn.disabled = true;
+                    
+                    // Sign in with email and password
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    // Check if email is verified
+                    if (!user.emailVerified) {
+                        await auth.signOut();
+                        this.showError('loginForm', 
+                            'ইমেইল ভেরিফাই করা হয়নি। ' +
+                            '<a href="#" style="color: #16a085; font-weight: bold;" onclick="loginApp.resendVerification(\'' + email + '\')">ভেরিফিকেশন ইমেইল আবার পাঠান</a>'
+                        );
+                        loginBtn.innerHTML = originalText;
+                        loginBtn.disabled = false;
+                        return;
+                    }
+                    
+                    // Check if profile exists
+                    const userDoc = await db.collection('members').doc(user.uid).get();
+                    
+                    if (!userDoc.exists) {
+                        // New user - redirect to complete profile
+                        window.location.href = 'complete-profile.html';
+                    } else {
+                        // Existing user - redirect to user page
+                        window.location.href = 'user.html';
+                    }
+                    
+                } catch (error) {
+                    console.error('Login error:', error);
+                    
+                    let errorMessage = 'লগইন ব্যর্থ হয়েছে';
+                    switch(error.code) {
+                        case 'auth/wrong-password':
+                            errorMessage = 'পাসওয়ার্ড ভুল হয়েছে';
+                            break;
+                        case 'auth/user-not-found':
+                            errorMessage = 'এই ইমেইলে কোনো অ্যাকাউন্ট নেই';
+                            break;
+                        case 'auth/too-many-requests':
+                            errorMessage = 'অনেকবার চেষ্টা করেছেন। কিছুক্ষণ পর আবার চেষ্টা করুন';
+                            break;
+                        case 'auth/network-request-failed':
+                            errorMessage = 'ইন্টারনেট সংযোগে সমস্যা';
+                            break;
+                    }
+                    
+                    this.showError('loginForm', errorMessage);
+                    
+                    // Reset button
+                    const loginBtn = document.getElementById('loginBtn');
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> লগইন করুন';
+                    loginBtn.disabled = false;
+                }
+            }
+            
+            async handleRegister(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('regName').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const confirmPassword = document.getElementById('regConfirmPassword').value;
+                const registerBtn = document.getElementById('registerBtn');
+                
+                // Validation
+                if (!name || !phone || !email || !password || !confirmPassword) {
+                    this.showError('registerForm', 'অনুগ্রহ করে সব তথ্য পূরণ করুন');
+                    return;
+                }
+                
+                // Validate email domain
+                if (!this.isValidEmail(email)) {
+                    this.showError('registerForm', 'শুধুমাত্র @gmail.com বা @outlook.com ইমেইল গ্রহণযোগ্য');
+                    return;
+                }
+                
+                // Validate phone number
+                if (!/^1[3-9]\d{8}$/.test(phone)) {
+                    this.showError('registerForm', 'সঠিক ফোন নম্বর দিন (01 দিয়ে শুরু করে 11 ডিজিট)');
+                    return;
+                }
+                
+                // Password validation
+                const passwordErrors = this.validatePassword(password);
+                if (passwordErrors.length > 0) {
+                    this.showError('registerForm', 'পাসওয়ার্ড শর্ত পূরণ হয়নি: ' + passwordErrors.join(', '));
+                    return;
+                }
+                
+                // Confirm password
+                if (password !== confirmPassword) {
+                    this.showError('registerForm', 'দুটি পাসওয়ার্ড মিলছে না');
+                    return;
+                }
+                
+                try {
+                    // Show loading
+                    const originalText = registerBtn.innerHTML;
+                    registerBtn.innerHTML = '<div class="loader"></div>';
+                    registerBtn.disabled = true;
+                    
+                    // Check if phone already exists
+                    const fullPhone = '+880' + phone;
+                    const phoneCheck = await db.collection('members').where('phone', '==', fullPhone).get();
+                    
+                    if (!phoneCheck.empty) {
+                        throw new Error('এই ফোন নম্বরটি ইতিমধ্যে ব্যবহৃত হয়েছে');
+                    }
+                    
+                    // Check if email already exists
+                    const emailCheck = await db.collection('members').where('email', '==', email).get();
+                    
+                    if (!emailCheck.empty) {
+                        throw new Error('এই ইমেইলটি ইতিমধ্যে ব্যবহৃত হয়েছে');
+                    }
+                    
+                    // Create user with email and password
+                    const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    
+                    // Update user display name
+                    await user.updateProfile({
+                        displayName: name
+                    });
+                    
+                    // Send email verification
+                    await user.sendEmailVerification();
+                    
+                    // Save basic user info to Firestore
+                    await db.collection('members').doc(user.uid).set({
+                        name: name,
+                        phone: fullPhone,
+                        email: email,
+                        uid: user.uid,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        isGuest: false,
+                        status: 'pending', // Pending until profile completion
+                        emailVerified: false
+                    });
+                    
+                    // Show success message
+                    this.showSuccess('registerForm', 
+                        'অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে! ' +
+                        'আপনার ইমেইলে একটি ভেরিফিকেশন লিংক পাঠানো হয়েছে। ' +
+                        'লিংকে ক্লিক করে অ্যাকাউন্ট সক্রিয় করুন।'
+                    );
+                    
+                    // Clear form
+                    e.target.reset();
+                    
+                    // Switch to login tab after 3 seconds
+                    setTimeout(() => {
+                        this.switchTab('login');
+                        this.showSuccess('loginForm', 'অ্যাকাউন্ট তৈরি হয়েছে। এখন লগইন করুন।');
+                    }, 3000);
+                    
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    
+                    let errorMessage = 'রেজিস্টার ব্যর্থ হয়েছে';
+                    switch(error.code) {
+                        case 'auth/email-already-in-use':
+                            errorMessage = 'এই ইমেইলটি ইতিমধ্যে ব্যবহৃত হয়েছে';
+                            break;
+                        case 'auth/weak-password':
+                            errorMessage = 'পাসওয়ার্ড খুব দুর্বল';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'সঠিক ইমেইল ঠিকানা দিন';
+                            break;
+                        case 'auth/operation-not-allowed':
+                            errorMessage = 'এই অপারেশনটি এখন চালু নেই';
+                            break;
+                        default:
+                            if (error.message.includes('ফোন নম্বর')) {
+                                errorMessage = error.message;
+                            }
+                    }
+                    
+                    this.showError('registerForm', errorMessage);
+                    
+                } finally {
+                    // Reset button
+                    registerBtn.innerHTML = '<i class="fas fa-user-plus"></i> অ্যাকাউন্ট তৈরি করুন';
+                    registerBtn.disabled = false;
+                }
+            }
+            
+            async handleGuest(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('guestName').value.trim();
+                const phone = document.getElementById('guestPhone').value.trim();
+                const guestBtn = document.getElementById('guestBtn');
+                
+                // Validation
+                if (!name || !phone) {
+                    this.showError('guestForm', 'অনুগ্রহ করে নাম এবং ফোন নম্বর দিন');
+                    return;
+                }
+                
+                // Validate phone number
+                if (!/^1[3-9]\d{8}$/.test(phone)) {
+                    this.showError('guestForm', 'সঠিক ফোন নম্বর দিন (01 দিয়ে শুরু করে 11 ডিজিট)');
+                    return;
+                }
+                
+                try {
+                    // Show loading
+                    const originalText = guestBtn.innerHTML;
+                    guestBtn.innerHTML = '<div class="loader"></div>';
+                    guestBtn.disabled = true;
+                    
+                    const fullPhone = '+880' + phone;
+                    
+                    // Check if guest already exists with this phone
+                    const phoneCheck = await db.collection('members')
+                        .where('phone', '==', fullPhone)
+                        .where('isGuest', '==', true)
+                        .get();
+                    
+                    let userId;
+                    
+                    if (!phoneCheck.empty) {
+                        // Existing guest - use existing UID
+                        userId = phoneCheck.docs[0].id;
+                        localStorage.setItem('guestUID', userId);
+                        
+                        // Sign in anonymously
+                        await auth.signInAnonymously();
+                        
+                    } else {
+                        // New guest - create anonymous user
+                        const userCredential = await auth.signInAnonymously();
+                        userId = userCredential.user.uid;
+                        
+                        // Save guest info
+                        await db.collection('members').doc(userId).set({
+                            name: name,
+                            phone: fullPhone,
+                            isGuest: true,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'guest'
+                        });
+                        
+                        localStorage.setItem('guestUID', userId);
+                    }
+                    
+                    // Redirect to user page
+                    window.location.href = 'user.html';
+                    
+                } catch (error) {
+                    console.error('Guest login error:', error);
+                    this.showError('guestForm', 'গেস্ট লগইন ব্যর্থ: ' + error.message);
+                    
+                    // Reset button
+                    guestBtn.innerHTML = '<i class="fas fa-play"></i> শুরু করুন';
+                    guestBtn.disabled = false;
+                }
+            }
+            
+            async handleGoogleLogin() {
+                try {
+                    const provider = new firebase.auth.GoogleAuthProvider();
+                    
+                    // Add scopes if needed
+                    provider.addScope('profile');
+                    provider.addScope('email');
+                    
+                    // Sign in with popup
+                    const result = await auth.signInWithPopup(provider);
+                    const user = result.user;
+                    
+                    // Check if user exists in members collection
+                    const userDoc = await db.collection('members').doc(user.uid).get();
+                    
+                    if (!userDoc.exists) {
+                        // New Google user - save basic info
+                        await db.collection('members').doc(user.uid).set({
+                            name: user.displayName,
+                            email: user.email,
+                            photoURL: user.photoURL,
+                            isGuest: false,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            status: 'active',
+                            emailVerified: true
+                        });
+                        
+                        // Redirect to complete profile for additional info
+                        window.location.href = 'complete-profile.html';
+                    } else {
+                        // Existing user - redirect to user page
+                        window.location.href = 'user.html';
+                    }
+                    
+                } catch (error) {
+                    console.error('Google login error:', error);
+                    
+                    let errorMessage = 'Google লগইন ব্যর্থ';
+                    switch(error.code) {
+                        case 'auth/popup-closed-by-user':
+                            errorMessage = 'লগইন পপআপ বন্ধ করে দিয়েছেন';
+                            break;
+                        case 'auth/cancelled-popup-request':
+                            errorMessage = 'লগইন বাতিল করা হয়েছে';
+                            break;
+                        case 'auth/popup-blocked':
+                            errorMessage = 'পপআপ ব্লক করা আছে। অনুগ্রহ করে পপআপ Allow করুন';
+                            break;
+                    }
+                    
+                    this.showError('loginForm', errorMessage);
+                }
+            }
+            
+            async handleForgotPassword() {
+                const email = document.getElementById('loginEmail').value.trim();
+                
+                if (!email) {
+                    this.showError('loginForm', 'পাসওয়ার্ড রিসেট করতে ইমেইল দিন');
+                    return;
+                }
+                
+                if (!this.isValidEmail(email)) {
+                    this.showError('loginForm', 'সঠিক ইমেইল ঠিকানা দিন');
+                    return;
+                }
+                
+                try {
+                    await auth.sendPasswordResetEmail(email);
+                    this.showSuccess('loginForm', 'পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে');
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    this.showError('loginForm', 'পাসওয়ার্ড রিসেট ব্যর্থ: ' + error.message);
+                }
+            }
+            
+            async resendVerification(email) {
+                try {
+                    // Get current user or sign in again
+                    const methods = await auth.fetchSignInMethodsForEmail(email);
+                    
+                    if (methods.length > 0) {
+                        // Send verification email
+                        await auth.sendPasswordResetEmail(email);
+                        this.showSuccess('loginForm', 'নতুন ভেরিফিকেশন ইমেইল পাঠানো হয়েছে');
+                    }
+                } catch (error) {
+                    console.error('Resend verification error:', error);
+                    this.showError('loginForm', 'ভেরিফিকেশন ইমেইল পাঠাতে ব্যর্থ');
+                }
+            }
+            
+            checkAuthState() {
+                auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        // User is signed in
+                        if (user.emailVerified || user.isAnonymous) {
+                            // Check if we should redirect
+                            const currentPath = window.location.pathname;
+                            if (currentPath.includes('index.html') || currentPath === '/') {
+                                db.collection('members').doc(user.uid).get()
+                                    .then(doc => {
+                                        if (!doc.exists) {
+                                            window.location.href = 'complete-profile.html';
+                                        } else {
+                                            window.location.href = 'user.html';
+                                        }
+                                    })
+                                    .catch(() => {
+                                        // If error, stay on login page
+                                    });
+                            }
+                        }
+                    }
+                });
+            }
+            
+            isValidEmail(email) {
+                const validDomains = ['@gmail.com', '@outlook.com'];
+                return validDomains.some(domain => email.endsWith(domain));
+            }
+            
+            showError(formId, message) {
+                this.clearErrors();
+                
+                const form = document.getElementById(formId);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                
+                // Insert after form
+                form.parentNode.insertBefore(errorDiv, form.nextSibling);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (errorDiv.parentNode) {
+                        errorDiv.parentNode.removeChild(errorDiv);
+                    }
+                }, 5000);
+            }
+            
+            showSuccess(formId, message) {
+                this.clearErrors();
+                
+                const form = document.getElementById(formId);
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                
+                // Insert after form
+                form.parentNode.insertBefore(successDiv, form.nextSibling);
+                
+                // Auto remove after 5 seconds
+                setTimeout(() => {
+                    if (successDiv.parentNode) {
+                        successDiv.parentNode.removeChild(successDiv);
+                    }
+                }, 5000);
+            }
+            
+            clearErrors() {
+                document.querySelectorAll('.error-message, .success-message').forEach(el => {
+                    el.remove();
+                });
+            }
+            
+            clearError(input) {
+                const error = input.parentNode.querySelector('.error-message');
+                if (error) {
+                    error.remove();
+                }
+            }
         }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            window.loginApp = new LoginApp();
+            
+            // Register service worker for PWA
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(() => console.log('Service Worker Registered'))
+                    .catch(err => console.log('Service Worker Registration Failed:', err));
+            }
+        });
     </script>
 </body>
 </html>
